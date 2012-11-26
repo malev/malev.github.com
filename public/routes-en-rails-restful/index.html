@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>routes.rb en rails - RESTful</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>routes.rb en rails - RESTful</h1>
+
+<p>Varias veces necesito refrescar como trabajan el sistema de rutas <strong>routes</strong> de rails, por lo que aquí presento un resumen. Por supuesto, basado en el guía oficial de rails [1].
+A.- El distpatcher de rails se encarga de 2 cosas: procesar las peticiones del browser y de generar helpers para el manejo de rutas internos del desarrollo.
+B.- Tipos de rutas:</p>
+
+<ul>
+<li><p>1.- RESTful</p></li>
+<li><p>2.- Named routes</p></li>
+<li><p>3.- Nested routes</p></li>
+<li><p>4.- Regular routes</p></li>
+<li><p>5.- Default routes</p></li>
+</ul>
+
+
+<p><strong>1.- RESTful routes</strong>
+Representational State Transfer es una técnica de arquitectura software para sistemas hipermedia  distribuidos como la World Wide Web. Forma parte de la tesis doctoral de Roy Fielding [2]. En lo que se refiere a rutas, RESTful se puede resumir (con el perdón de Roy) en:
+1) Usar un identificador de recursos (las URL en nuestro caso)
+2) Enviar una representación de la acción a hacer: GET, POST, PUT y DELETE.
+ej DELETE /users/1</p>
+
+<p>1.1 Uso</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="no">ActionController</span><span class="o">::</span><span class="no">Routing</span><span class="o">::</span><span class="no">Routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span> <span class="o">|</span><span class="n">map</span><span class="o">|</span>
+  <span class="n">map</span><span class="o">.</span><span class="n">resources</span> <span class="ss">:photos</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Esto nos habilitará:</p>
+
+<table>
+<tbody>
+<tr>
+<th>Verb</th>
+<th>URL</th>
+<th>controller</th>
+<th>action</th>
+<th>used for</th>
+</tr>
+<tr>
+<td>GET</td>
+<td>/photos</td>
+<td>Photos</td>
+<td>index</td>
+<td>display a list of all photos</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/photos/new</td>
+<td>Photos</td>
+<td>new</td>
+<td>return an HTML form for creating a new  photo</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/photos</td>
+<td>Photos</td>
+<td>create</td>
+<td>create a new photo</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/photos/1</td>
+<td>Photos</td>
+<td>show</td>
+<td>display a specific photo</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/photos/1/edit</td>
+<td>Photos</td>
+<td>edit</td>
+<td>return an HTML form for editing a photo</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/photos/1</td>
+<td>Photos</td>
+<td>update</td>
+<td>update a specific photo</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/photos/1</td>
+<td>Photos</td>
+<td>destroy</td>
+<td>delete a specific photo</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Lo interesante es "action", ya que combinando los verbos con la forma de la URL podemos acceder a las acciones básicas de un registro: nuevo, crear, mostrar, editar, actualizar y borrar y por supuesto el index que en general se usa para mostrar un listado con todos los registros.</p>
+
+<p>1.2 Traducido a visión de controller, tendríamos:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">PhotosController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+    <span class="c1"># GET new_photo_url</span>
+    <span class="k">def</span> <span class="nf">new</span>
+      <span class="c1"># return an HTML form for describing the new account</span>
+    <span class="k">end</span>
+
+    <span class="c1"># POST photo_url</span>
+    <span class="k">def</span> <span class="nf">create</span>
+      <span class="c1"># create an photo</span>
+    <span class="k">end</span>
+
+    <span class="c1"># GET photo_url</span>
+    <span class="k">def</span> <span class="nf">show</span>
+      <span class="c1"># find and return the photo</span>
+    <span class="k">end</span>
+
+    <span class="c1"># GET edit_photo_url</span>
+    <span class="k">def</span> <span class="nf">edit</span>
+      <span class="c1"># return an HTML form for editing the photo</span>
+    <span class="k">end</span>
+
+    <span class="c1"># PUT photo_url</span>
+    <span class="k">def</span> <span class="nf">update</span>
+      <span class="c1"># find and update the photo</span>
+    <span class="k">end</span>
+
+    <span class="c1"># DELETE photo_url</span>
+    <span class="k">def</span> <span class="nf">destroy</span>
+      <span class="c1"># delete the photo</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>1.3 ¿Cómo hacemos una petición DELETE o PUT? Los browsers no la soportan, pero podemos hacer:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&lt;</span><span class="sx">%= link_to &quot;delete&quot;, video, :method =</span><span class="o">&gt;</span> <span class="s2">&quot;delete&quot;</span> <span class="sx">%&gt;</span>
+<span class="sx"># En el caso de un form_tag</span>
+<span class="sx">&lt;%= form_tag(&#39;/posts/1&#39;, :method =&gt;</span> <span class="ss">:put</span><span class="p">)</span> <span class="sx">%&gt;</span>
+<span class="sx"># =&gt;</span>
+</code></pre>
+</div>
+
+
+<p>1.4 Diferencias entre url y path:</p>
+
+<table>
+<tbody>
+<tr>
+<th>helper
+</th><th>resultado
+</th></tr>
+<tr>
+<td>photos_path</td>
+<td>/photos</td>
+</tr>
+<tr>
+<td>photos_url</td>
+<td>http://www.ejemplo.com/photos</td>
+</tr>
+<tr>
+<td>new_photo_path</td>
+<td>/photo/new</td>
+</tr>
+<tr>
+<td>new_photo_url</td>
+<td>http://www.ejemplo.com/photo/new
+</td></tr>
+</tbody>
+</table>
+
+
+<p>1.5 Singular resources</p>
+
+<p>Hasta ahora todo plural, pero a veces manejamos elementos que son y serán únicos:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">map</span><span class="o">.</span><span class="n">resource</span> <span class="ss">:avatar</span>
+</code></pre>
+</div>
+
+
+<p>Muy similar al anterior, pero ahora solo tenemos componentes en <strong>singular</strong>. Y tenemos los siguientes helpers:
+new_avatar_X, edit_avatar_X, avatar_X (donde X puede ser: url o path). Dentro del controlador tendíamos las acciones: show, new, create, edit, update y destroy.</p>
+
+<p>1.6 Customizing
+Uno de los slogans de rails dice: Convention over Configuration - CoC - Convención sobre configuración. Pero que pasa cuando, tenemos que salirnos de la convención? Para esto son las opciones de configuración:
+<strong>:controller</strong>
+map.resources :adminphotos, :controller => 'nombre_del_controlador'
+map.resources :adminphotos, :controller => 'admin/controlador'  # namespace
+map.resources :adminphotos, :controller => '/admin/controlador' # fuerza ir al top-level
+<strong>:requeriments</strong>
+map.resources :photos, :requirements => {:id  => /[A-Z][A-Z][0-9]+/}<br/>
+Aquí el parámetro :id debe cumplir con la expresión regular.</p>
+
+<p><strong>:conditions</strong>
+Define condiciones a las rutas:
+map.connect 'post/:id', :controller => 'posts', :action => 'show', :conditions => { :method => :get }</p>
+
+<p><strong>:path_prefix</strong>
+map.resources :photos, :path_prefix => 'photo/:photo_id'</p>
+
+<h1>:name_prefix - Define a prefix for all generated routes, usually ending in an underscore. Use this if you have named routes that may clash.</h1>
+
+<p>map.resources :photos, :path_prefix => '/photographers/:photographer_id',  :name_prefix => 'photographer<em>' map.resources :photos, :path_prefix => '/agencies/:agency_id',  :name_prefix => 'agency</em>'
+Permite usar rutas como: /photographers/photographer_2, donde obvio id = 2 :)</p>
+
+<p><strong>: only</strong>
+map.resources :photos, :only => [:index, :show]
+Solo son válidas las acciones index y show.</p>
+
+<p><strong>:except</strong>
+map.resources :photos, :except => :destroy
+Todas las acciones son válidas excepto por destroy.</p>
+
+<p>1.7 Agregando más rutas [5]
+La verdad es que con show, edit e index casi nunca es suficiente. En general necesitamos search, preview, etc. Cómo agregamos estas rutas?</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">map</span><span class="o">.</span><span class="n">resources</span> <span class="ss">:photos</span><span class="p">,</span> <span class="ss">:collection</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:search</span> <span class="o">=&gt;</span> <span class="ss">:get</span> <span class="p">}</span> <span class="c1">#=&gt; photos/search</span>
+<span class="n">map</span><span class="o">.</span><span class="n">resources</span> <span class="ss">:photos</span><span class="p">,</span> <span class="ss">:member</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:preview</span>  <span class="o">=&gt;</span> <span class="ss">:get</span> <span class="p">}</span> <span class="c1">#=&gt; photos/1/preview</span>
+<span class="n">map</span><span class="o">.</span><span class="n">resources</span> <span class="ss">:photos</span><span class="p">,</span> <span class="ss">:new</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:draft</span> <span class="o">=&gt;</span> <span class="ss">:get</span><span class="p">}</span>        <span class="c1">#=&gt; photos/new/draft</span>
+</code></pre>
+</div>
+
+
+<p>Todas generan rutas nuevas que aputan a diferentes actions del controlador. La primera apunta a search, la 2da a preview (y admite un id como parámetro) y la tercera a draft. Todas arman sus helpers con terminaciones en url y path: search_photos_X, preview_photo(), draft_photos. Por otro lado, todas se pueden configurar con diferentes verbos. Cambiando ":get" por [:get, :put] o lo que sea.
+Hasta aquí la primer parte de este pequeño ayuda memoria. Con los que a mi entender, son las opciones más comunes del RESTful.
+Por último los dejo con este [3] video, donde los chicos de rails envy nos recomiendan: Stay RESTful y con este [4] tutorial sobre RESTful y Rails que estoy por leer en estos días :)</p>
+
+<p>[1] <a href="http://guides.rubyonrails.org/routing.html">http://guides.rubyonrails.org/routing.html</a>
+[2] <a href="http://es.wikipedia.org/wiki/Representational_State_Transfer">http://es.wikipedia.org/wiki/Representational_State_Transfer</a>
+[3] <a href="http://www.youtube.com/watch?v=p30dcETXwD4&amp;feature=related">http://www.youtube.com/watch?v=p30dcETXwD4&amp;feature=related</a>
+[4] <a href="http://sobrerailes.com/2007/06/20/tutorial-desarrollo-rest-con-ruby-on-rails/">http://sobrerailes.com/2007/06/20/tutorial-desarrollo-rest-con-ruby-on-rails/</a>
+[5] <a href="http://stackoverflow.com/questions/1667146/whats-the-difference-between-new-collection-and-member-routes">http://stackoverflow.com/questions/1667146/whats-the-difference-between-new-collection-and-member-routes</a></p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

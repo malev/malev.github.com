@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Objects in Javascript</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Objects in Javascript</h1>
+
+<p>En una entrevista cuando buscaba trabajo me hicieron algunas preguntas teóricas acerca de <strong>objetos</strong> (no pude responder casi ninguna), pero recuerdo una que me dejo pensando mucho tiempo: ¿Todos los lenguajes orientados a objetos tienen <strong>clases</strong>? Yo dije que sí, pero resultó que no :( . <strong>Javascript</strong> es justamente un lenguaje orientado a objetos que no tiene clases. Vamos a ver un poco:
+<strong>Objetos en Javascript</strong></p>
+
+<div class="highlight"><pre><code class="javascript"><span class="p">[]</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">;</span> <span class="c1">// true</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){})</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">;</span> <span class="c1">// true</span>
+</code></pre>
+</div>
+
+
+<p>Wow todo es un objeto entonces!! (bueno, casi) También  vemos en la última línea del ejemplo que javascript cuenta con funciones anónimas.</p>
+
+<p><strong>¿Y cómo armamos nuestros objetos?</strong>
+ Simple, lo obtenemos a partir del objeto "padre" <strong>Objetc</strong>.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">;</span>
+<span class="c1">// Atributos:</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<span class="c1">// Un método</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">multiplication</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span> <span class="p">};</span>
+</code></pre>
+</div>
+
+
+<p><strong>Otra forma es declarar un objeto literal</strong>
+Aquí vemos un ejemplo donde no solo creamos un objetos, si no que además le añadimos atributos y hasta un método.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">marcosObject</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">name</span> <span class="o">:</span> <span class="s2">&quot;Marcos&quot;</span><span class="p">,</span>
+  <span class="nx">nickname</span> <span class="o">:</span> <span class="s2">&quot;malev&quot;</span><span class="p">,</span>
+  <span class="nx">age</span> <span class="o">:</span> <span class="mi">27</span><span class="p">,</span>
+  <span class="nx">favoriteSongs</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;yesterday&#39;</span><span class="p">,</span> <span class="s1">&#39;help&#39;</span><span class="p">],</span>
+  <span class="nx">talks</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;hi there, my na8me is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)}</span>
+<span class="p">};</span>
+</code></pre>
+</div>
+
+
+<p><strong>Object constructor</strong>
+También podemos crear un objeto a partir de otro objeto constructor. Nota: por convención los objetos constructores se nombran con el primer carácter en mayúsculas.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">Person</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="nx">age</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">talk</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;hi, my name is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Volvemos a usar a keyword new</span>
+<span class="nx">ana</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Ana&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
+<span class="nx">ana</span><span class="p">.</span><span class="nx">talk</span><span class="p">();</span>
+</code></pre>
+</div>
+
+
+<p>Esta forma de declarar objetos funciona, pero es muy costosa en cuando a memoria. Por cada objeto que hacemos desde el constructor Person, declaramos el método talk, es decir que tenemos varios métodos talk en memoria y todos hacen lo mismo. Una mejor aproximación es añadir el método talk al prototipo de Person:</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">Person</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">jump</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I am jumping&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+
+<p>Ahora, este nuevo método "jump" estará habilitado en todos los objetos que se hayan construido a partir del constructor Person y los objetos que se construirán en el futuro. Aquí una salvedad, NO podemos agregar un método o atributo a un objeto literal de la misma manera:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="no">Rhino</span> <span class="mi">1</span><span class="o">.</span><span class="mi">7</span> <span class="n">release</span> <span class="mi">2</span> <span class="mi">2010</span> <span class="mi">09</span> <span class="mi">15</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="n">persona</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="o">[</span><span class="n">object</span> <span class="no">Object</span><span class="o">]</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="n">persona</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">js</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span><span class="p">:</span> <span class="n">uncaught</span> <span class="no">JavaScript</span> <span class="n">runtime</span> <span class="n">exception</span><span class="p">:</span> <span class="no">TypeError</span><span class="p">:</span> <span class="no">Cannot</span> <span class="n">set</span> <span class="n">property</span> <span class="s2">&quot;age&quot;</span> <span class="n">of</span> <span class="n">undefined</span> <span class="n">to</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">at</span> <span class="p">:</span><span class="mi">3</span>
+</code></pre>
+</div>
+
+
+<p><strong>Agregando un método o atributo a un objeto literal:</strong>
+Justamente lo interesante de la programación con objetos prototipados es que podemos tener objetos que se comportan de manera particular, es decir que tienen un comportamiento extra. Una forma de manejar ese tema es justamente añadiendo métodos a un objeto ya existente.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">ana</span><span class="p">.</span><span class="nx">work</span> <span class="o">=</span> <span class="s2">&quot;Something&quot;</span><span class="p">;</span>
+<span class="nx">ana</span><span class="p">.</span><span class="nx">go</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="s2">&quot;moving&quot;</span> <span class="p">}</span>
+</code></pre>
+</div>
+
+
+<p><strong>Closures</strong>
+En javascript solo las funciones pueden generar nuevos <strong>namescopes</strong>, estas también permiten recordar los objetos que almacenan, de esta manera podemos hacer:</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">funciton</span> <span class="nx">getCounter</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="o">++</span><span class="nx">i</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="nx">getCounter</span><span class="p">();</span>
+<span class="nx">counter</span><span class="p">()</span> <span class="c1">// 1</span>
+<span class="nx">counter</span><span class="p">()</span> <span class="c1">// 2</span>
+</code></pre>
+</div>
+
+
+<p>En el ejemplo vemos que estamos retornando una función. Esto es así por que en javascript las funciones son funciones de primer clase (<strong>first-class functions</strong>), es decir son objetos con los que podemos trabajar.</p>
+
+<p><strong>¿Cómo probar los ejemplos?</strong>
+En lo personal los estoy probando con la consola de javascript de Firebug en Firefox o en Rhino.</p>
+
+<p><strong>Resources</strong></p>
+
+<ul>
+<li>http://mckoss.com/jscript/object.htm</li>
+<li>http://docs.jquery.com/Types#Options</li>
+<li>http://www.codeproject.com/kb/aspnet/JsOOP1.aspx</li>
+<li>http://www.crockford.com/javascript/inheritance.html</li>
+<li>http://eloquentjavascript.net/contents.html</li>
+<li>http://fingernailsinoatmeal.com/post/292301859/metaprogramming-ruby-vs-javascript</li>
+<li>http://www.youtube.com/watch?v=seX7jYI96GE</li>
+</ul>
+
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

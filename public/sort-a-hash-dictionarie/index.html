@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Sort a hash / dictionarie</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Sort a hash / dictionarie</h1>
+
+<p>Hace bastante tiempo escuchaba una charla donde alguien había preguntado cómo ordenar un <strong>hash</strong>. La respuesta era: no se cómo hacerlo, pero ... para qué queres ordenar un hash? Honestamente me sigo preguntando: ¿Cuál es la necesidad de ordenar un hash? <strong>(<em>Actualizado 3/11/10</em> - Hay un comentario de Roberto Alsina que nos brinda una explicación de por qué ordenaríamos un Hash)</strong>. Pero al menos ya se como ordenarlos. Igual, antes una mini definición obtenida de la ayuda de Ruby: [1]</p>
+
+<blockquote>A Hash is a collection of key-value pairs. It is similar to an Array, except that indexing is done via arbitrary keys of any object type, not an integer index.</blockquote>
+
+
+<p><em>Un hash es una colección de parse llave-valor. Es similar a un arrelo, excepto que el indexado se hace mediante llaves arbitrarias de cualquier tipo de objeto, no un índice entero.</em> (mis traducciones son siempre un poco flojas).
+En ruby la clase Hash incluye al módulo Enumerable [2] que provee entre otras cosas la habilidad de realizar un ordenamiento (<strong>sort</strong>).
+<strong>Ejemplo fallido:</strong></p>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">malev</span><span class="vi">@malev</span><span class="o">-</span><span class="n">dell</span><span class="ss">:~</span><span class="sr">/code/</span><span class="n">temp</span><span class="err">$</span> <span class="n">irb</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:primero</span> <span class="o">=&gt;</span> <span class="s2">&quot;primero&quot;</span><span class="p">,</span> <span class="ss">:segundo</span> <span class="o">=&gt;</span> <span class="s2">&quot;segundo&quot;</span><span class="p">,</span> <span class="ss">:tercero</span> <span class="o">=&gt;</span> <span class="s2">&quot;tercero&quot;</span><span class="p">}</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:primero</span><span class="o">=&gt;</span><span class="s2">&quot;primero&quot;</span><span class="p">,</span> <span class="ss">:segundo</span><span class="o">=&gt;</span><span class="s2">&quot;segundo&quot;</span><span class="p">,</span> <span class="ss">:tercero</span><span class="o">=&gt;</span><span class="s2">&quot;tercero&quot;</span><span class="p">}</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">sort</span>
+<span class="n">h</span><span class="o">.</span><span class="n">sort</span>     <span class="n">h</span><span class="o">.</span><span class="n">sort_by</span>  
+<span class="o">&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">sort</span>
+<span class="no">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`&lt;=&gt;&#39; for :primero:Symbol</span>
+<span class="sb">from (irb):2:in `</span><span class="o">&lt;=&gt;</span><span class="s1">&#39;</span>
+<span class="s1">from (irb):2:in `sort&#39;</span>
+<span class="n">from</span> <span class="p">(</span><span class="n">irb</span><span class="p">):</span><span class="mi">2</span>
+</code></pre>
+</div>
+
+
+<p>Está claro que no podemos realizar el ordenamiento tan simple como con los arreglos comunes. Además, el ejemplo es malo pues ya está ordenado. Vamos a probar el método <strong>sort_by</strong>:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&gt;&gt;</span> <span class="c1"># Opción 1</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:z</span> <span class="o">=&gt;</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="ss">:h</span> <span class="o">=&gt;</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span> <span class="o">=&gt;</span> <span class="s2">&quot;t&quot;</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:b</span><span class="o">=&gt;</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span><span class="o">=&gt;</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="ss">:h</span><span class="o">=&gt;</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="s2">&quot;z&quot;</span><span class="p">}</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">key</span><span class="o">|</span> <span class="n">key</span><span class="o">.</span><span class="n">to_s</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span>
+<span class="o">&gt;&gt;</span> <span class="c1"># Opción 2</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:b</span><span class="o">=&gt;</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span><span class="o">=&gt;</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="ss">:h</span><span class="o">=&gt;</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="s2">&quot;z&quot;</span><span class="p">}</span>
+<span class="o">&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">sort</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">}</span>
+<span class="o">=&gt;</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span>
+</code></pre>
+</div>
+
+
+<p>Estamos cerca, pero todavía no tenemos un hash ordenado como resultado, si no un arreglo extraño. Pero claro, los métodos sort y sort_by devuelven un arreglo siempre :)
+Convirtiendo el extraño arreglo en un hash ahora sí ordenado:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&gt;&gt;</span> <span class="n">j</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span>
+<span class="o">=&gt;</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span> 
+<span class="o">=&gt;</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span>
+<span class="o">&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">j</span><span class="o">[</span><span class="n">i</span><span class="o">[</span><span class="mi">0</span><span class="o">]]</span> <span class="o">=</span> <span class="n">i</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span>
+<span class="o">&gt;&gt;</span> <span class="n">j</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:b</span><span class="o">=&gt;</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span><span class="o">=&gt;</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="ss">:h</span><span class="o">=&gt;</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="s2">&quot;z&quot;</span><span class="p">}</span>
+</code></pre>
+</div>
+
+
+<p><strong><em>Actualizado 03/11/10</em> - Matías Flores recomienda en un comentario:</strong></p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&gt;&gt;</span> <span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:z</span> <span class="o">=&gt;</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="ss">:h</span> <span class="o">=&gt;</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span> <span class="o">=&gt;</span> <span class="s2">&quot;t&quot;</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:b</span><span class="o">=&gt;</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span><span class="o">=&gt;</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="ss">:h</span><span class="o">=&gt;</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="s2">&quot;z&quot;</span><span class="p">}</span>
+<span class="o">&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">key</span><span class="o">|</span> <span class="n">key</span><span class="o">.</span><span class="n">to_s</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="o">[[</span><span class="ss">:b</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:h</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:t</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="ss">:z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="o">]]</span>
+<span class="o">&gt;&gt;</span> <span class="no">Hash</span><span class="o">[</span><span class="n">a</span><span class="o">]</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:b</span><span class="o">=&gt;</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="ss">:t</span><span class="o">=&gt;</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="ss">:h</span><span class="o">=&gt;</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="s2">&quot;z&quot;</span><span class="p">}</span>
+</code></pre>
+</div>
+
+
+<p>Bueno, así ordenaría un Hash en Ruby. Es bastante complicado, pero ... seguramente no lo voy a usar nunca :)
+Nota: uno de los ejemplos fue extraído de [3].
+[1] <a href="http://ruby-doc.org/core/classes/Hash.html">http://ruby-doc.org/core/classes/Hash.html</a>
+[2] <a href="http://ruby-doc.org/core/classes/Enumerable.html">http://ruby-doc.org/core/classes/Enumerable.html</a>
+[3] <a href="http://nhw.pl/wp/2007/06/11/sorting-hash-by-values">http://nhw.pl/wp/2007/06/11/sorting-hash-by-values</a></p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

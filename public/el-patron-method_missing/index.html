@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>El patrÃ³n method_missing</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>El patrÃ³n method_missing</h1>
+
+<p>¿Alguna vez tuviste que escribir varios métodos muy parecidos en una única clase? A mi me paso hace poco, tenía que escribir métodos que entreguen precios de una manera muy similar:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">AlgoConPrecios</span>
+  <span class="k">def</span> <span class="nf">basic_price</span>
+    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">offer_price</span>
+    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">suggested_price</span>
+    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="k">end</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>ABURRIDOOO!!!! y para peor, ESTÁTICO!! Escribir muchos métodos similares que hacen casi lo mismo y hasta tienen un nombre parecido no tiene onda. Investigando encontré el <strong>patrón</strong>: <strong>method_missing</strong>. He aquí, cada vez que llamamos a un método que no existe en una clase, ruby busca si está definido el método: method_missing, si está hace lo que el dice y si no, nos tira una <strong>exception</strong> [1]:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&gt;&gt;</span> <span class="mi">9</span><span class="o">.</span><span class="n">no_existe</span>
+<span class="no">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`no_existe&#39; for 9:Fixnum</span>
+<span class="sb">from (irb):1</span>
+<span class="sb">&gt;&gt;</span>
+<span class="sb">class Fixnum</span>
+<span class="sb">  def method_missing(sym, *args, &amp;block)</span>
+<span class="sb">    puts &quot;Hola, soy method missing&quot;</span>
+<span class="sb">  end</span>
+<span class="sb">end</span>
+<span class="sb">&gt;&gt; 9.no_existe</span>
+<span class="sb">Hola, soy method missing</span>
+<span class="sb">=&gt; nil</span>
+<span class="sb">&gt;&gt;</span>
+</code></pre>
+</div>
+
+
+<p>La pregunta es: ¿Cómo aprovechamos esto? Muy simple! declaramos <strong>method_missing</strong> en nuestra clase, investigamos el contenido de "sym" que no es más que un <strong>símbolo</strong> que tiene el método que intentamos llamar (y no existe), lo procesamos y entregamos el resultado. Pero! antes tendríamos que hacer algunas validaciones. ¿Qué pasa si en algún lugar de nuestra aplicación llamamos a un método que de verdad no existe? Ahí puede que si queramos que salte la exception.</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="n">sym</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">sym</span><span class="o">.</span><span class="n">to_s</span> <span class="o">=~</span> <span class="sr">/^[a-z]+_price+$/</span>
+    <span class="k">case</span> <span class="n">sym</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+    <span class="k">when</span> <span class="s2">&quot;suggested&quot;</span> <span class="k">then</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="k">when</span> <span class="s2">&quot;basic&quot;</span> <span class="k">then</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="k">end</span>
+  <span class="k">else</span>
+    <span class="k">super</span> <span class="c1"># si el método no tiene nada que ver tiramos la exception</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Esto haría que nuestro código responda a llamadas como: suggested_price, basic_price, etc. Pero no a cualquier otro tipo de llamada. ¿Cómo lo dinamizamos un poco más? Nuestro case-when-end podría venir de una tabla o algo por el estilo y ahí sí tendríamos código super dinámico. Pero ahora, qué pasa si alguien escribe unos test para nuestro código, e intenta testear la existencia de los métodos: (por ejemplo con rspec)</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">it</span> <span class="s2">&quot;should has a suggested price&quot;</span> <span class="k">do</span>
+    <span class="vi">@objeto</span> <span class="o">=</span> <span class="no">AlgoConPrecios</span><span class="o">.</span><span class="n">new</span>
+    <span class="vi">@objeto</span><span class="o">.</span><span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:suggester_price</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>¿Cómo fingimos que nuestro método existe? ¿Recuerdan el método <strong>respond_to?</strong>? ¿No? Bueno, este método responde true cuando el método (entregado en el argumento) está definido: [2]</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="o">&gt;&gt;</span> <span class="s2">&quot;cadena&quot;</span><span class="o">.</span><span class="n">respond_to?</span> <span class="s2">&quot;downcase&quot;</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="s2">&quot;cadena&quot;</span><span class="o">.</span><span class="n">respond_to?</span> <span class="s2">&quot;no_soy_un_metodo&quot;</span>
+<span class="o">=&gt;</span> <span class="kp">false</span>
+<span class="o">&gt;&gt;</span>
+</code></pre>
+</div>
+
+
+<p>Hora de redefinirlo:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">AlgoConPrecios</span>
+  <span class="k">def</span> <span class="nf">respond_to?</span><span class="p">(</span><span class="n">sym</span><span class="p">,</span> <span class="n">include_private</span><span class="o">=</span><span class="kp">false</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sym</span><span class="o">.</span><span class="n">to_s</span> <span class="o">=~</span> <span class="sr">/^[a-z]+_price+$/</span>
+      <span class="kp">true</span>
+    <span class="k">else</span>
+      <span class="k">super</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Y listo! hasta hicimos que nuestro código pase los test. Por supuesto y cada vez que jugamos con código que casi se escribe solo hay que tener mucho cuidado, sobre todo por que los errores después son difíciles de ver. También estamos generando código difícil de leer para programadores inexpertos (como el que escribe). Pero al menos hace divertido escribir métodos aburridos.
+Por último, dejo un artículo sobre como funciona el find_by_... de ActiveRecord [3]. Y una propuesta bastante interesante, que como adivinaron hace algo bastante parecido.
+<strong>Resources</strong>
+[1] http://rubylearning.com/satishtalim/ruby_method_missing.html
+[2] http://www.ruby-doc.org/core/classes/Object.html#M001005
+[3] http://technicalpickles.com/posts/using-method_missing-and-respond_to-to-create-dynamic-methods/
+[4] http://kconrails.com/2010/12/21/dynamic-methods-in-ruby-with-method_missing/</p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

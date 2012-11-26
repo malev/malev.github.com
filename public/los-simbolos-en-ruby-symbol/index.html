@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Los sÃ­mbolos en ruby (symbols)</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Los sÃ­mbolos en ruby (symbols)</h1>
+
+<p>Los símbolos representan nombre y algunas cadenas dentro del intérprete de Ruby. Se pueden generar haciendo :nombre, :”cadena” o con el conversor <strong>to_sym</strong>. Se creará un único objeto para cada nombre o cadena y este dura toda la ejecución del programa.</p>
+
+<p><strong>Métodos de la clase Symbol:</strong>
+1.- all_symbols – Devuelve la tabla de símbolos de Ruby.
+2.- id2name – devuelve una cadena – :name.id2name no da “name”.
+3.- inspect – Returns the symbol literal #no se que será eso :S
+4.- to_i – Un entero, propio del símbolo
+5.- to_s - igual que id2name
+6.- to_sym – Convierte un símbolo en un símbolo! devuelve self :X</p>
+
+<blockquote>
+Symbol.all_symbols.size    # 903
+Symbol.all_symbols[1,20]   # [:floor, :ARGV, :Binding, …]
+:hola
+:hola.to_s      # “hola”
+:hola.to_i      # 28201
+:hola.object_id # 282018
+:fred.inspect   # ":fred"</blockquote>
+
+
+<p><strong>Diferencia con las contantes</strong>
+Una constante “Fred” puede ser una constantes en un contexto dado, un método en otro o hasta una referencia a una clase. En cambio :Fred será el mismo objeto en los tres contextos. [1]</p>
+
+<p>Cómo cada vez que llamo la cadena “string” genero un objeto nuevo, en cambio, el símbolo :symbol es siempre el mismo, por lo que puedo aprovechar esta característica para ahorrar un poco de memoria.</p>
+
+<p>El ejemplo clásico es comparar el object_id de un símbolo y el de una cadena para ver que... [2]</p>
+
+<blockquote>puts "string".object_id
+puts "string".object_id
+puts :symbol.object_id
+puts :symbol.object_id</blockquote>
+
+
+<p>Ojo! El <strong>garbage collector</strong> nunca los elimina de memoria. Por lo que si creas símbolos que no vas a usar más en toda la ejecución del programa, pierdes toda esa memoria. [3]</p>
+
+<p><strong>Cuándo usamos un símbolo y cuándo una cadena</strong> [4]
+Por ejemplo, una cadena que no necesitaremos cambiar más en todo el programa. O que no necesitemos hacer uso de los métodos de la clase String.
+Si el contenido (secuencia de caracteres) del objeto es importante, entonces usar cadenas. Si por el contrario, lo importante es la identidad del objeto, entonces usar símbolos.
+Un ejemplo clásico de este dilema se da a la hora de definir un hash:</p>
+
+<blockquote>usuario = {“nombre” =&gt; “Marcos”, “apodo” =&gt; “malev”}
+usuario = {:nombre =&gt; “Marcos”, :apodo =&gt; “malev”}</blockquote>
+
+
+<p>Claramente conviene usar símbolos, ya que “nombre” o :nombre no es tan importante, si no a lo que apunta. Por otro lado, cada vez que llamemos a este hash y hagamos uso de la clave “nombre” estaremos creando un nuevo objeto, con su consiguiente gasto de memoria.</p>
+
+<p><strong>Otros usos</strong>
+También se usan para referenciar métodos y los argumentos de los mismos.</p>
+
+<p>Por último y para complicarnos la existencia, en [5] hay una discusión en la que Ryan propone no usar símbolos como claves de los hashes. Vean Uds. por que...</p>
+
+<p>[1] <a href="http://ruby-doc.org">ruby-doc.org</a>
+[2] <a href="http://rubylearning.com/satishtalim/ruby_symbols.html">rubylearning.com</a>
+[3] <a href="http://www.randomhacks.net/articles/2007/01/20/13-ways-of-looking-at-a-ruby-symbol">www.randomhacks.net</a>
+[4]<a href="http://glu.ttono.us/articles/2005/08/19/understanding-ruby-symbols">glu.ttono.us</a>
+[5] <a href="http://www.oreillynet.com/ruby/blog/2005/12/yet_another_blog_about_ruby_sy.html">www.oreillynet.com</a></p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

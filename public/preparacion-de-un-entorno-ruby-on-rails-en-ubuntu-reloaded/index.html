@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>PreparaciÃ³n de un entorno Ruby on Rails en Ubuntu - Reloaded</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>PreparaciÃ³n de un entorno Ruby on Rails en Ubuntu - Reloaded</h1>
+
+<p><strong>Aclaración:</strong> Por alguna razón wordpress no me deja poner dos guiones consecutivos y los reemplaza por un único guión un poquito más largo. Cada vez que vean este guión extraño recomiendo cambiarlo por dos guiones medios para que funcione.</p>
+
+<p>Hace un tiempo prepare un <a href="http://blog.malev.com.ar/2010/08/19/armando-un-entorno-rails-en-ubuntu-10-04/">tutorial</a> sobre como instalar Ruby en Ubuntu 10.04, anduvo bien, pero hoy se quedó un poco viejito. Hoy en día en la comunidad <strong>se desaconseja instalar ruby desde los repositorios de nuestras distros</strong>. Según Ryan Bigg, es: <em>"is out-dated and leads to major headaches"</em> [1]. La posta! es instalarlo desde RVM.
+Por supuesto seguimos necesitando de varias librerías y cosillas para que nuestro Ruby ande a la perfección:</p>
+
+<blockquote>sudo apt-get install build-essential git-core curl</blockquote>
+
+
+<p><em>Notese que también estamos instalando GIT</em></p>
+
+<p>Una vez hecho esto tiramos en nuestra terminal lo siguiente:</p>
+
+<blockquote>
+bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc 
+</blockquote>
+
+
+<p>Ahí mismo, RVM nos recomien instalar más cosas:</p>
+
+<blockquote>
+sudo apt-get install build-essential bison openssl libreadline6 libreadline6-dev curl git-core zlib1g
+zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf
+</blockquote>
+
+
+<p>Listo, <strong>tenemos RVM instalado perfectamente</strong>, cerramos y volvemos a abrir la terminal (para recargar el .bashrc) y vamos por Ruby:</p>
+
+<blockquote>
+rvm install 1.9.2
+
+
+rvm install 1.8.7
+
+
+# si eso no funciona:
+
+
+rvm package install zlib
+
+
+rvm remove 1.9.2
+
+
+# tener cuidado con los guiones aquí abajo antes del with
+
+
+rvm install 1.9.2 -C --with-zlib-dir=$rvm_path/usr
+</blockquote>
+
+
+<p>Y elegimos uno para que funcione por defecto:</p>
+
+<blockquote>
+# cuidado con los guiones aquí también
+
+rvm --default use 1.9.2
+
+</blockquote>
+
+
+<p><strong>Solo si usas versiones de Rails menores a 3:</strong>
+Hay un pequeño problema entre Ruby Gems y rails 2.3.x. Una de las soluciones es hacer downgrade de ruby gems:
+En la consola:</p>
+
+<blockquote>
+gem install rubygems-update -v 1.4.2 
+
+update_rubygems _1.4.2_ 
+
+</blockquote>
+
+
+<p>Y listo!</p>
+
+<p>Volviendo con nuestro entorno, vamos a <strong>instalar sqlite y MySQL</strong>:</p>
+
+<blockquote>
+sudo apt-get install mysql-server sqlite3 
+
+sudo apt-get install libmysqlclient-dev libmysqlclient-dev
+</blockquote>
+
+
+<p>Le damos un poco de color a nuestra consola:</p>
+
+<blockquote>
+gem install wirble hirb
+</blockquote>
+
+
+<p>y añadimos esto a nuestro ~/.ircrb  (corregido gracias a Pedro)</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;wirble&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;hirb&#39;</span>
+<span class="no">Wirble</span><span class="o">.</span><span class="n">init</span>
+<span class="no">Wirble</span><span class="o">.</span><span class="n">colorize</span>
+<span class="c1"># hirb (active record output format in table)</span>
+<span class="no">Hirb</span><span class="o">::</span><span class="no">View</span><span class="o">.</span><span class="n">enable</span>
+<span class="c1"># IRB Options</span>
+<span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:AUTO_INDENT</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+<span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:SAVE_HISTORY</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:EVAL_HISTORY</span><span class="o">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 
+<span class="c1"># Log to STDOUT if in Rails</span>
+<span class="k">if</span> <span class="no">ENV</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;RAILS_ENV&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="no">Object</span><span class="o">.</span><span class="n">const_defined?</span><span class="p">(</span><span class="s1">&#39;RAILS_DEFAULT_LOGGER&#39;</span><span class="p">)</span>
+  <span class="nb">require</span> <span class="s1">&#39;logger&#39;</span>
+  <span class="no">RAILS_DEFAULT_LOGGER</span> <span class="o">=</span> <span class="no">Logger</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">STDOUT</span><span class="p">)</span>
+  <span class="c1">#IRB.conf[:USE_READLINE] = true</span>
+ 
+  <span class="c1"># Display the RAILS ENV in the prompt</span>
+  <span class="c1"># ie : [Development]&gt;&gt;</span>
+  <span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:PROMPT</span><span class="o">][</span><span class="ss">:CUSTOM</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="ss">:PROMPT_N</span> <span class="o">=&gt;</span> <span class="s2">&quot;[</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">].</span><span class="n">capitalize</span><span class="si">}</span><span class="s2">]&gt;&gt; &quot;</span><span class="p">,</span>
+   <span class="ss">:PROMPT_I</span> <span class="o">=&gt;</span> <span class="s2">&quot;[</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">].</span><span class="n">capitalize</span><span class="si">}</span><span class="s2">]&gt;&gt; &quot;</span><span class="p">,</span>
+   <span class="ss">:PROMPT_S</span> <span class="o">=&gt;</span> <span class="kp">nil</span><span class="p">,</span>
+   <span class="ss">:PROMPT_C</span> <span class="o">=&gt;</span> <span class="s2">&quot;?&gt; &quot;</span><span class="p">,</span>
+   <span class="ss">:RETURN</span> <span class="o">=&gt;</span> <span class="s2">&quot;=&gt; %s</span><span class="se">\n</span><span class="s2">&quot;</span>
+   <span class="p">}</span>
+
+  <span class="c1"># Set default prompt</span>
+  <span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:PROMPT_MODE</span><span class="o">]</span> <span class="o">=</span> <span class="ss">:CUSTOM</span>
+<span class="k">end</span>
+ 
+<span class="c1"># We can also define convenient methods (credits go to thoughtbot)</span>
+<span class="c1"># def me</span>
+<span class="c1">#  User.find_by_email(&quot;me@gmail.com&quot;)</span>
+</code></pre>
+</div>
+
+
+<p>Por último instalamos rails y estamos listos:</p>
+
+<blockquote>
+gem install rails
+</blockquote>
+
+
+<p>Espero sea útil!
+<strong>Resources</strong>
+[1] <a href="http://ryanbigg.com/">Ryan Bigg</a>
+[2] <a href="http://www.rubyinside.com/how-to-install-ruby-1-9-2-and-rails-3-0-on-ubuntu-10-10-4148.html">Peter Cooper video tutorial</a></p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

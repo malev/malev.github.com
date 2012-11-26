@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Include in Ruby</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Include in Ruby</h1>
+
+<p>Hace un tiempo, cuando recién empezaba con Ruby escribí un post sobre la diferencia entre <strong>include</strong> y <strong>require</strong> en ruby[1]. Hoy estaba discutiendo acerca de ese tema con un compañero de la oficina y se me ocurrió repasarlo y de paso, hacerlo un poquito más claro con un ejemplo:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">module</span> <span class="nn">MyModule</span>
+  <span class="k">def</span> <span class="nf">module_method</span>
+    <span class="nb">puts</span> <span class="s2">&quot;esto deberia aparecer&quot;</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">module_method_two</span>
+    <span class="nb">puts</span> <span class="s2">&quot;esto no deberia aparecer&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Clase</span>
+
+  <span class="kp">include</span> <span class="no">MyModule</span>
+
+  <span class="k">def</span> <span class="nf">method_from_a_class</span>
+    <span class="nb">puts</span> <span class="s2">&quot;desde la clase&quot;</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">module_method_two</span>
+    <span class="nb">puts</span> <span class="s2">&quot;este metodo sobreescribe al del modulo&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">objeto</span> <span class="o">=</span> <span class="no">Clase</span><span class="o">.</span><span class="n">new</span>
+<span class="n">objeto</span><span class="o">.</span><span class="n">method_from_a_class</span>
+<span class="n">objeto</span><span class="o">.</span><span class="n">module_method_two</span>
+<span class="n">objeto</span><span class="o">.</span><span class="n">module_method</span>
+<span class="c1">#malev@SERVER ~$ ruby experi.rb</span>
+<span class="c1">#desde la clase</span>
+<span class="c1">#este metodo sobreescribe al del modulo</span>
+<span class="c1">#esto deberia aparecer</span>
+</code></pre>
+</div>
+
+
+<p>Esto es lo mismo que hace la clase <strong>Array</strong>[2] al incluir <strong>Ennumerable</strong>[3]. Y nos permite acceder a métodos como first o find que <strong>no </strong>están definidos en la clase Array pero sí en el módulo Ennumerable. Por otro lado, nos permite incluir el módulo ennumerable y hacer usos de muchos métodos en alguna clase nuestra en la que lo podamos necesitar.
+<strong>Resources</strong>
+[1] <a href="http://blog.malev.com.ar/2009/08/26/%C2%BFcual-es-la-diferencia-entre-include-y-require-in-ruby/">http://blog.malev.com.ar/2009/08/26/%C2%BFcual-es-la-diferencia-entre-include-y-require-in-ruby/</a>
+[2] <a href="http://ruby-doc.org/ruby-1.9/classes/Array.html">http://ruby-doc.org/ruby-1.9/classes/Array.html</a>
+[3] <a href="http://ruby-doc.org/ruby-1.9/classes/Enumerable.html"> http://ruby-doc.org/ruby-1.9/classes/Enumerable.html</a></p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

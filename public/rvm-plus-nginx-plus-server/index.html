@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>RVM plus Nginx plus Server</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>RVM plus Nginx plus Server</h1>
+
+<p>Al fin pude hacer andar mi servidor con RVM y Nginx! Aquí voy a dejar una receta por si tengo que volver a hacerlo (espero que no en el mediano plazo al menos).
+Vamos a necesitar algunas cosas antes de empezar: <strong>curl</strong>, <strong>git</strong>, muchos paquetes de desarrollo y un usuario que pueda usar sudo.</p>
+
+<h2>Empezamos con el usuario</h2>
+
+<blockquote><p>sudo adduser malev</p>
+
+<p>sudo passwd malev</p>
+
+<p>sudo visudo</p></blockquote>
+
+<p>y agregamos al final:</p>
+
+<blockquote><p>malev ALL=(ALL) ALL</p></blockquote>
+
+<p>y ahora nos transformamos en nuestro nuevo usuario:</p>
+
+<blockquote><p>su malev</p></blockquote>
+
+<h2>Preparandonos para instalar</h2>
+
+<p>Primero necesitamos instalar RVM en modo multiusuario [1], para esto necesitamos <strong>curl</strong> y <strong>git</strong>:</p>
+
+<blockquote><p>sudo yum install git-core curl</p></blockquote>
+
+<p>e instalamos RVM:</p>
+
+<blockquote><p>sudo bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)</p></blockquote>
+
+<p>Esto instalara RVM en <em>/usr/local/lib/rvm</em> y nos generará archivos en: <em>/etc/rvmrc</em> y <em>/usr/local/rvm</em>. También necesitamos configurar nuestros <em>.bashrc</em> y el esqueleto para los futuros usuarios, así que en los archivos: <em>/root/.bashrc</em> y <em>/etc/skel/.bashrc</em> agregamos:</p>
+
+<div class="highlight"><pre><code class="bash"><span class="k">if </span>groups | grep -q rvm ; <span class="k">then</span>
+<span class="k">  </span><span class="nb">source</span> <span class="s2">&quot;/usr/local/lib/rvm&quot;</span>
+<span class="k">fi</span>
+</code></pre>
+</div>
+
+
+<p>Ahora también tenemos un grupo llamado <strong>RVM</strong> y necesitamos agregar nuestro usuario al mismo:</p>
+
+<blockquote><p>adduser malev rvm</p></blockquote>
+
+<p>Otra buena práctica es definir el <strong>environment</strong> para todas nuestras aplicaciones Rails. En el archivo <em>/etc/environment</em> agregamos:</p>
+
+<blockquote><p>RAILS_ENV=production</p></blockquote>
+
+<p>Aquí yo me deslogueo y vuelvo a entrar, pero esta vez como malev y al tipear:</p>
+
+<blockquote><p>type rvm | head -n1</p></blockquote>
+
+<p>debería ver: <strong>rvm is a function</strong>, lo cual me indica que RVM está correctamente instalado.</p>
+
+<h2>Avanzando</h2>
+
+<p>Yo estoy usando una distro basada en CentOS, así que para instalar las librerías de desarrollo tengo que hacer:</p>
+
+<blockquote><p>sudo yum groupinstall "Development Tools"</p>
+
+<p>sudo yum install kernel-devel kernel-headers</p>
+
+<p>sudo yum install openssl-devel libcurl-devel ImageMagick httpd-devel ruby-libs zlib-devel libjpeg-devel giflib-devel readline-devel</p>
+
+<p>sudo yum -y install libpcap libpcap-devel libnet libnet-devel pcre pcre-devel gcc automake autoconf libtool make gcc-c++ libyaml libyaml-devel zlib zlib-devel pkgconfig ruby-devel libxml2 libxml2-devel libxslt libxslt-devel</p></blockquote>
+
+<p><strong>Nota:</strong> Si estas usando Ubuntu, hay MUCHA info sobre que instalar en este paso, pero en ppio bastaría con esto:</p>
+
+<blockquote><p>sudo apt-get install build-essential ruby-full libmagickcore-dev imagemagick libxml2-dev libxslt1-dev git-core ruby-devel libxml2 libxml2-devel libxslt libxslt-devel</p></blockquote>
+
+<h2>Instalando Ruby</h2>
+
+<blockquote><p>rvm pkg install readline</p>
+
+<p>rvm pkg install zlib</p>
+
+<p>rvm pkg install openssl</p>
+
+<p>rvm install 1.9.2</p>
+
+<p>rvm use --default 1.9.2</p></blockquote>
+
+<h2>Instalando Passenger</h2>
+
+<blockquote><p>gem install passenger</p>
+
+<p>rvmsudo passenger-install-nginx-module</p></blockquote>
+
+<p>Si lo instalaste en el directorio por defecto (<em>/opt/nginx</em>), clonate este <a href="https://gist.github.com/1918419">gist</a> y copia el archivo <strong>nginx</strong> en <em>/etc/init.d</em> con permisos de ejecución.</p>
+
+<h2>Configurar Nginx</h2>
+
+<p>Buscar el archivo <em>/opt/nginx/conf/nginx.conf</em> que debería verse más o menos como este <a href="https://gist.github.com/1918436">gist</a>. Las líneas más importantes son la 1 donde digo con qué usuario ejecutar nginx y la 22 donde establezco dónde ubicaré el resto de los archivos de configuración.</p>
+
+<h2>Instalar nuestra app</h2>
+
+<p>En mi caso voy a instalar una app llamada infofund. Y voy a deployar con <em>capistrano</em>, pero las explicaciones de cómo usar <em>capistrano</em> vendrán en otro post. De momento les dejo el archivo <em>/opt/nginx/conf/conf.d/infofund.conf</em> cuyo contenido está en este <a href="https://gist.github.com/2339504">gist</a>.</p>
+
+<p>En principio y como para probar pueden bajarse el contenido del proyecto en el directorio <em>/home/malev/sites/infofund/current</em>, crear el Gemset e instalar todas las gemas con nuestro amigo <strong>bundle</strong> para luego iniciar <strong>nginx</strong>:</p>
+
+<blockquote><p>sudo /etc/init.d/nginx start</p></blockquote>
+
+<p>y ya debería estar todo andando!</p>
+
+<h2>Resources</h2>
+
+<ol>
+<li>https://rvm.beginrescueend.com/rvm/install/#explained</li>
+<li>http://thekindofme.wordpress.com/2010/10/24/rails-3-on-ubuntu-10-10-with-rvm-passenger-and-nginx/</li>
+<li>https://rvm.beginrescueend.com/rvm/install/#explained</li>
+<li>http://ikennaokpala.wordpress.com/2011/12/27/deployment-strategy-for-rails-passenger-and-nginx-server-with-multiple-virtual-hosts/</li>
+<li>http://blog.ninjahideout.com/posts/a-guide-to-a-nginx-passenger-and-rvm-server</li>
+<li>http://kris.me.uk/2010/08/30/rails3-hosting-all-in-one.html</li>
+</ol>
+
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Sobre callbacks en Rails</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Sobre callbacks en Rails</h1>
+
+<p>¿Qué son los <strong>callbacks</strong>? Son métodos que son llamados en determinados momentos del ciclo de vida de un objeto. Esto nos permite escribir código que se va a ejecutar cuando nuestros <strong>objetos</strong> (<strong>ActiveRecord</strong> u otros) son creados, grabados, actualizados, borrados, validados o cargados desde la base de datos (created, saved, updated, deleted, validated, or loaded).
+Supongamos que nosotros queremos que inmediatamente después de haber creado un usuario, se cree automáticamente una cuenta para ese usuario. Podríamos hacer esto (por favor no lo intenten en sus casas, puede ser peligroso):</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@account</span> <span class="o">=</span> <span class="no">Account</span><span class="o">.</span><span class="n">create</span> <span class="ss">:user</span> <span class="o">=&gt;</span> <span class="vi">@user</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Sin embargo, estaríamos contaminando nuestro <strong>controller</strong> con lógica de modelo. Una primera aproximación, podría ser, usar un callback: after_create. Se ejecuta siempre que se crea un objeto y se lo guarda en la base por primera vez:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1">#...</span>
+  <span class="k">def</span> <span class="nf">after_create</span>
+    <span class="no">Account</span><span class="o">.</span><span class="n">create</span> <span class="ss">:user</span> <span class="o">=&gt;</span> <span class="nb">self</span>
+  <span class="k">end</span>
+  <span class="c1">#...</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Esta aproximación funciona y está buena, pero tiene algunos problemillas: el nombre del método no describe lo que hace y si tenemos que hacer varias cosas, tendríamos un método gigante. Aquí entran en acción el método de clase: after_create:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1">#...</span>
+  <span class="n">after_create</span> <span class="ss">:create_account</span>
+  
+  <span class="k">def</span> <span class="nf">create_account</span>
+    <span class="no">Account</span><span class="o">.</span><span class="n">create</span> <span class="ss">:user</span> <span class="o">=&gt;</span> <span class="nb">self</span>
+  <span class="k">end</span>
+  <span class="c1">#...</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>Una vez creado el objeto, ActiveRecord buscará un método llamado "<strong>create_account</strong>" y lo ejecutará. Esto nos permite tener varios métodos que se ejecuten como callbacks, he inclusive podemos llamarlos de manera secuencial:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="k">class</span> <span class="nc">Snippet</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_create</span> <span class="ss">:test1</span>
+  <span class="n">after_create</span> <span class="ss">:test2</span>
+
+  <span class="k">def</span> <span class="nf">test1</span>
+    <span class="nb">puts</span> <span class="s2">&quot;test 1&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">test2</span>
+    <span class="nb">puts</span> <span class="s2">&quot;test 2&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+
+<p>y los resultados:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">ruby</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="n">p136</span> <span class="p">:</span><span class="mo">002</span> <span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="no">Snippet</span><span class="o">.</span><span class="n">new</span>
+ <span class="o">=&gt;</span> <span class="c1">#&lt;Snippet id: nil, content: nil, user_id: nil... private: false&gt; </span>
+<span class="n">ruby</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="n">p136</span> <span class="p">:</span><span class="mo">003</span> <span class="o">&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">save</span>
+<span class="nb">test</span> <span class="mi">1</span>
+<span class="nb">test</span> <span class="mi">2</span>
+ <span class="o">=&gt;</span> <span class="kp">true</span> 
+<span class="n">ruby</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="n">p136</span> <span class="p">:</span><span class="mo">004</span> <span class="o">&gt;</span>
+</code></pre>
+</div>
+
+
+<p>Por supuesto, after_create no es el único callback. Hay mucha información al respecto <a href="http://guides.rubyonrails.org/active_record_validations_callbacks.html#callbacks-overview">aquí</a>. Aquí solo voy a listar los callbacks disponibles:</p>
+
+<p><strong>Creando un objeto</strong></p>
+
+<ul>
+<li>before_validation</li>
+<li>after_validation</li>
+<li>before_save</li>
+<li>before_create</li>
+<li>around_create</li>
+<li>after_create</li>
+<li>after_save</li>
+</ul>
+
+
+<p><strong>Actualizando un objeto</strong></p>
+
+<ul>
+<li>before_validation</li>
+<li>after_validation</li>
+<li>before_save</li>
+<li>before_update</li>
+<li>around_update</li>
+<li>after_update</li>
+<li>after_save</li>
+</ul>
+
+
+<p><strong>Eliminando un objeto</strong></p>
+
+<ul>
+<li>before_destroy</li>
+<li>after_destroy</li>
+<li>around_destroy</li>
+</ul>
+
+
+<p>Su uso es ampliamente recomendable y una cosa a tener en cuenta es... no podemos evitarlos! No son como las validaciones, en las que a veces podemos no ejecutarlas. Aquí si alguna vez necesitamos saltearlos algún callback, vamos a tener que repensar la lógica del modelo de vuelta. Usar con responsabilidad.</p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

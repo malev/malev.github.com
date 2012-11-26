@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <!-- Meta information -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Marcos Vanetta (malev)" />
+  <meta name="description" content="Authorship and collaboration in open source projects"/>
+  <!--Facebook meta -->
+  <meta property="og:title" content="Marcos Alejandro Vanetta (malev)" />
+  <meta property="og:description" content="Authorship and collaboration in open source projects" />
+  <meta property="og:image" content="/images/malev_logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- End of facebook meta -->
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+  <!-- Homepage CSS -->
+  <!-- <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" media="screen, projection" /> -->
+  <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" type="text/css" media="screen, projection" />
+  
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu&v2' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700&v2' rel='stylesheet' type='text/css'>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--  <script src="/js/bootstrap.min.js"></script>-->
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>Formateando la salida de python</title>
+</head>
+<body>
+<div class="container">
+  <div class="site">
+  <div id="post">
+    <div class="title">
+      <h1><a href='/#blog' name='blog'>Blog posts</a></h1>
+    </div>
+    <h1>Formateando la salida de python</h1>
+
+<p>En estos días tuve que realizar una simulación, bastante simple, pero que implicó numerosos cálculos complejos. Las opciones era: Matlab, octave, etc. Yo tuve experiencia con el primero. Si bien, pude resolver el problema de manera rápida, apenas tuve que empezar a cambiar algunos puntos del algoritmo o extenderlo, la cosa se volvió cada vez más lenta y tediosa. Me recuerdo un día haciendo cálculos a mano, por que ya no tenía ganas de programar más en ese día.
+Esta vez, me decidí por un lenguaje más sólido. Claro, elegí <strong>Python</strong>.
+Pero... (siempre hay un pero) el problema llegó a la hora de presentar los resultados. Grandes tablas de números difíciles de leer aparecían en la pantalla y ahí me pregunte: ¿Hay alguna forma de presentar esta información de una manera más amigable y legible?
+¡CLARO QUE SÍ!</p>
+
+<p><strong>Salida elegante</strong>
+Esta la podemos encontrar en el manual de python [1]. Puede ayudarnos mucho, cuando los resultados a mostrar no son demasiados. Los primeros son <em>str()</em> y <em>repr()</em>. La diferencia entre ellos es que el primero nos entrega un valor legible por seres humanos y el segundo por intérpretes :S  [2]</p>
+
+<div class="highlight"><pre><code class="python"><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">a</span> <span class="o">=</span> <span class="mf">0.000000394</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="s">&#39;3.94e-07&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="s">&#39;3.9400000000000001e-07&#39;</span>
+</code></pre>
+</div>
+
+
+
+
+<div class="highlight"><pre><code class="python"><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="c">#         1   1      1</span>
+<span class="c">#         2   4      8</span>
+<span class="c">#         3   9     27</span>
+<span class="c">#         4  16     64</span>
+</code></pre>
+</div>
+
+
+<p>rjust(n) : indica cuantos “n” espacios se dejarán a la izquierda
+Es necesario conocer cuánto “mide” cada cadena a presentar. También están las funciones primas: <em>ljust()</em> y <em>center()</em></p>
+
+<div class="highlight"><pre><code class="python"><span class="k">print</span> <span class="s">&#39;{0} con {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;pizza&#39;</span><span class="p">,</span> <span class="s">&#39;cerveza&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&#39;El valor de PI es aproximadamente {0}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&#39;El valor de PI es aproximadamente {0!s}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="c"># !s es el equivalente a str()</span>
+<span class="k">print</span> <span class="s">&#39;El valor de PI es aproximadamente {0:.3f}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="c"># pizza con cerveza</span>
+<span class="c"># El valor de PI es aproximadamente 3.14159265359.</span>
+<span class="c"># El valor de PI es aproximadamente 3.14159265359.</span>
+<span class="c"># El valor de PI es aproximadamente 3.142.</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Sjoerd&#39;</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s">&#39;Jack&#39;</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s">&#39;Dcab&#39;</span><span class="p">:</span> <span class="mi">7678</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">phone</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">&#39;{0:10} ==&gt; {1:10d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">phone</span><span class="p">)</span>
+<span class="c"># Dcab       ==&gt;       7678</span>
+<span class="c"># Jack       ==&gt;       4098</span>
+<span class="c"># Sjoerd     ==&gt;       4127</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Sjoerd&#39;</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s">&#39;Jack&#39;</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s">&#39;Dcab&#39;</span><span class="p">:</span> <span class="mi">8637678</span><span class="p">}</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">&#39;Jack: {0[Jack]:d}; Sjoerd: {0[Sjoerd]:d}; &#39;</span>
+    <span class="s">&#39;Dcab: {0[Dcab]:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+<span class="c"># Jack: 4098; Sjoerd: 4127; Dcab: 8637678</span>
+
+<span class="c"># La forma C (antigua)</span>
+<span class="k">print</span> <span class="s">&#39;</span><span class="si">%(language)s</span><span class="s"> esta de %(#)03d &#39;</span> <span class="o">%</span> \
+    <span class="p">{</span><span class="s">&#39;language&#39;</span><span class="p">:</span> <span class="s">&quot;Python&quot;</span><span class="p">,</span> <span class="s">&quot;#&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+<span class="c"># Python esta de 010</span>
+
+<span class="k">print</span> <span class="s">&quot;floats: </span><span class="si">%4.2f</span><span class="s"> </span><span class="si">%+.0e</span><span class="s"> </span><span class="si">%E</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">3.1416</span><span class="p">,</span> <span class="mf">3.1416</span><span class="p">,</span> <span class="mf">3.1416</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Preceding with zeros: </span><span class="si">%010d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1977</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;floats: </span><span class="si">%5.2f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="mf">473247.472347237492374</span>
+<span class="k">print</span> <span class="s">&quot;floats: </span><span class="si">%E</span><span class="s">&quot;</span> <span class="o">%</span> <span class="mf">473247.472347237492374</span>
+<span class="k">print</span> <span class="s">&quot;floats: </span><span class="si">%2.4E</span><span class="s">&quot;</span> <span class="o">%</span> <span class="mf">473247.472347237492374</span>
+<span class="c"># floats: 3.14 +3e+00 3.141600E+00</span>
+<span class="c"># Preceding with zeros: 0000001977</span>
+<span class="c"># floats: 473247.47</span>
+<span class="c"># floats: 4.732475E+05</span>
+<span class="c"># floats: 4.7325E+05</span>
+</code></pre>
+</div>
+
+
+
+
+<blockquote>'d' Signed integer decimal.
+'x' Signed hexadecimal (lowercase).
+'X' Signed hexadecimal (uppercase).
+'e' Floating point exponential format (lowercase).
+'E' Floating point exponential format (uppercase).
+'f' Floating point decimal format.
+'F' Floating point decimal format.
+'c' Single character (accepts integer or single character string).
+</blockquote>
+
+
+<p><strong>pprint (Ojo! Es así, no lo escribí mal)</strong>
+<em>Data pretty printer</em>. Es un módulo que permite presentar estructuras de datos de una forma “pretty” (linda). En general presenta la información en una sola línea a menos que se vea limitada por el argumento “width” (por defecto 80). [3]</p>
+
+<div class="highlight"><pre><code class="python"><span class="kn">import</span> <span class="nn">pprint</span>
+<span class="n">stuff</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;spam&#39;</span><span class="p">,</span> <span class="s">&#39;eggs&#39;</span><span class="p">,</span> <span class="s">&#39;lumberjack&#39;</span><span class="p">,</span> <span class="s">&#39;knights&#39;</span><span class="p">,</span> <span class="s">&#39;ni&#39;</span><span class="p">]</span>
+<span class="n">stuff</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stuff</span><span class="p">[:])</span>
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span>
+<span class="c">#[   [&#39;spam&#39;, &#39;eggs&#39;, &#39;lumberjack&#39;, &#39;knights&#39;, &#39;ni&#39;],</span>
+<span class="c">#    &#39;spam&#39;,</span>
+<span class="c">#    &#39;eggs&#39;,</span>
+<span class="c">#    &#39;lumberjack&#39;,</span>
+<span class="c">#    &#39;knights&#39;,</span>
+<span class="c">#    &#39;ni&#39;]</span>
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;hola&quot;</span> <span class="p">:</span> <span class="s">&quot;hello&quot;</span><span class="p">,</span>
+    <span class="s">&quot;adios&quot;</span> <span class="p">:</span> <span class="s">&quot;good by&quot;</span><span class="p">,</span>
+    <span class="s">&quot;buen dia&quot;</span> <span class="p">:</span> <span class="s">&quot;good morning&quot;</span>
+<span class="p">}</span>
+<span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+<span class="c">#{&#39;adios&#39;: &#39;good by&#39;, &#39;buen dia&#39;: &#39;good morning&#39;, &#39;hola&#39;: &#39;hello&#39;}</span>
+</code></pre>
+</div>
+
+
+<p><strong>HTML</strong>
+La idea es la siguiente: una vez obtenido todos los resultados, formatearlos en HTML con la herramienta que nos presenta [4] y generar un archivo “.html” que se puede abrir en un explorador cualquiera. De esa manera, si hay algún cambio en los resultados, se puede re-generar el archivo html y actualizar la ventana del explorador (con F5 en firefox por ejemplo).</p>
+
+<div class="highlight"><pre><code class="python"><span class="kn">import</span> <span class="nn">HTML</span>
+<span class="n">table_data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s">&#39;Smith&#39;</span><span class="p">,</span>       <span class="s">&#39;John&#39;</span><span class="p">,</span>         <span class="mi">30</span><span class="p">],</span>
+        <span class="p">[</span><span class="s">&#39;Carpenter&#39;</span><span class="p">,</span>   <span class="s">&#39;Jack&#39;</span><span class="p">,</span>         <span class="mi">47</span><span class="p">],</span>
+        <span class="p">[</span><span class="s">&#39;Johnson&#39;</span><span class="p">,</span>     <span class="s">&#39;Paul&#39;</span><span class="p">,</span>         <span class="mi">62</span><span class="p">],</span>
+    <span class="p">]</span>
+
+<span class="n">htmlcode</span> <span class="o">=</span> <span class="n">HTML</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span>
+    <span class="n">header_row</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Last name&#39;</span><span class="p">,</span>   <span class="s">&#39;First name&#39;</span><span class="p">,</span>   <span class="s">&#39;Age&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">htmlcode</span>
+</code></pre>
+</div>
+
+
+<p><strong>CSV (otro día)</strong>
+[1] http://docs.python.org/tutorial/inputoutput.html
+[2] http://docs.python.org/library/stdtypes.html#string-formatting
+[3] http://docs.python.org/library/pprint.html
+[4] http://www.decalage.info/python/html</p>
+
+    
+      <div class="comments" style="margin-top: 20px;">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'malevsblog'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    
+  </div>
+  <div id="related">
+    <h2><a href='/about.html'>About the author</a></h2>
+  </div>
+
+  <div id="related">
+    <h2>Related Posts</h2>
+    <ul class="posts">
+      
+        <li><span>01 Jun 2012</span> &raquo; <a href="/backbone-first-steps">Learning Javascript</a></li>
+      
+        <li><span>13 Apr 2012</span> &raquo; <a href="/nginx-passenger-and-php">Nginx, passenger and PHP</a></li>
+      
+        <li><span>09 Apr 2012</span> &raquo; <a href="/learning-javascript">Learning Javascript</a></li>
+      
+    </ul>
+  </div>
+</div>
+  <div class="site">
+    <div class="footer">
+      <div class="contact">
+        <p style="margin:0;">
+          <a href="/about.html">Marcos Vanetta</a> <strong>(malev)</strong><br />
+          Software engineer<br />
+          <a href="http://github.com/malev/">github</a> | <a href="http://twitter.com/malev/">twitter</a> | <a href="http://launchpad.net/~marcosvanetta">Launchpad</a>
+        </p>
+      </div>
+      <div class="rss">
+        <a href="http://feeds.feedburner.com/malev">
+          <img src="/images/rss-logo.png" alt="Subscribe to RSS Feed" style="width: 64px;"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<a href="http://github.com/malev"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29516046-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>
