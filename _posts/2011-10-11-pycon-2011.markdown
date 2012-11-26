@@ -1,0 +1,36 @@
+--- 
+layout: post
+title: Paso PyCon 2011
+wordpress_id: 898
+wordpress_url: http://blog.malev.com.ar/?p=898
+comments: true
+categories: 
+- title: comunidad
+  slug: comunidad
+  autoslug: comunidad
+- title: Python
+  slug: python
+  autoslug: python
+- title: PyAr
+  slug: pyar-2
+  autoslug: pyar
+tags: 
+- title: Python
+  slug: python
+  autoslug: python
+- title: pycon
+  slug: pycon
+  autoslug: pycon
+- title: pyconar
+  slug: pyconar
+  autoslug: pyconar
+---
+{{ page.title }}
+================
+Con un delay importante les cuento que paso PyCon Argentina 2011. Así es, el 23 y 24 de setiembre, gran parte de la comunidad hacker invadió Junín (provincia de Buenos Aires). Por supuesto estuve ahí.
+
+[![pyconar2011](/images/posts/2011/10/pyconar2011.png "pyconar2011")](http://blog.malev.com.ar/wp-content/uploads/2011/10/pyconar2011.png)
+
+Como siempre, la muy buena onda de la [comunidad](http://blog.malev.com.ar/category/comunidad/) de python garantizó y cumplió con 2 días espectaculares. Hubo de todo, charlas de muy alto nivel, oradores locales e internacionales, conocí Google App Engine, obtuve consejos sobre [como crear librerías](http://jbcabral.wordpress.com/2011/09/24/slides-de-mis-charlas-de-pyconar-2011/) y sobre TDD con python y mucho más. Las visitas internacionales, un verdadero lujo y hasta nos mando un saludo [Guido van Rossum](http://es.wikipedia.org/wiki/Guido_van_Rossum) desde Londres.
+No recuerdo el nombre, pero uno de los pibes Canonical me dio una mano sobre como configurar Launchpad para un aplicación que estoy haciendo (más adelante les comento que tal). Por último, también pude dar una charla, de la que hablare en otro post.
+Solo una conclusión: **Increíble!** y vayan guardando un lugar para mi en la próxima (todavía no sabemos donde va a ser).

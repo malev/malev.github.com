@@ -1,0 +1,47 @@
+--- 
+layout: post
+title: enchulando la consola de rails
+wordpress_id: 460
+wordpress_url: http://blog.malev.com.ar/?p=460
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+scritp/console production
+script/console --sandbox
+u = User.new
+y u  # print in a yml way
+autocomplete
+
+dentro de la consola estamos en un controlador:
+app.class
+
+app.get '/projects' # se puede llamar a post tambien
+app.flash
+
+app.cookies
+
+helper. (todos los helpers)
+
+link generation?
+
+app.methods.sort
+app.methods.grep(/_path$/).sort
+
+underscore:
+una suerte de ANS de las calculadoras viejas :)
+
+http://railscasts.com/episodes/48-console-tricks
+http://slash7.com/2006/12/21/secrets-of-the-rails-console-ninjas/
+http://drnicwilliams.com/2006/10/12/my-irbrc-for-consoleirb/#irbrc_win32
+http://drnicwilliams.com/2006/10/12/my-irbrc-for-consoleirb/
+http://blog.p.latyp.us/2008/03/calling-helpers-in-rails-console.html
+http://errtheblog.com/posts/41-real-console-helpers
+http://slash7.com/2006/12/21/secrets-of-the-rails-console-ninjas/
+
+http://rbjl.net/40-irbtools-release-the-power-of-irb

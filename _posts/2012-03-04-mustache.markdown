@@ -1,0 +1,102 @@
+--- 
+layout: post
+title: Mustache
+comments: true
+categories: 
+- title: Javascript
+  slug: javascript
+  autoslug: javascript
+- title: tools
+  slug: tools
+  autoslug: tools
+tags: 
+- title: javascript
+  slug: javascript
+  autoslug: javascript
+- title: templates
+  slug: templates
+  autoslug: templates
+- title: client
+  slug: client
+  autoslug: client
+---
+{{ page.title }}
+================
+Hasta hace no mucho tiempo, cada vez que tenía que dibujar algún HTML con AJAX hacía que rails lo dibuje y después lo pegaba con alguna función jQuery. Algo así:
+
+{% highlight ruby %}
+def create
+  @review = Review.create!(params[:review])
+  flash[:notice] = "Thank you for reviewing this product"
+  respond_to do |format|
+    format.html { redirect_to @review.product }
+    format.js
+  end
+end
+{% endhighlight %}
+
+Mientras que en algún lugar de la carpeta *views* tenía:
+
+{% highlight javascript %}
+    $("#reviews").append("<%= escape_javascript(render(:partial => @review)) %>");
+{% endhighlight %}
+
+Pero eso es el pasado! ¿Por qué hacer trabajar al server para dibujar un HTML is tranquilamente lo puede hacer el cliente? Porque no conocía [Mustache](http://mustache.github.com/), un lenguje te de **templates** muy parecido a jinja.
+
+¿Cuál es el plan?
+-----------------
+1. Hacer un request AJAX desde el cliente.
+2. El servidor busca / procesa los datos.
+3. El servidor devuelve Json.
+4. El cliente interpreta el Json y Mustache dibuja el HTML en base al template.
+
+
+Ejemplo
+-------
+
+<script src="https://gist.github.com/1967208.js"> </script>
+
+y eso nos daría como resultado:
+
+{% highlight html %}
+    <h1>Colors</h1>
+    <li><strong>red</strong></li>
+    <li><a href="#Green">green</a></li>
+    <li><a href="#Blue">blue</a></li>
+{% endhighlight %}
+
+En lo personal la sintaxis no me parece la mejor, es un poco confuso que **\{\{#items\}\}** y **\{\{/items\}\}** se puedan usar para iterar y para condicionales. Y para pasar funciones similares a los **helpers** de **Rails** necesitamos pasarle un **clousure**:
+
+<script src="https://gist.github.com/1967225.js"> </script>
+
+Por último, también nos permite el uso de **partials** para fomentar el reuso y si no queremos tener todo nuestro template en Strings de Javascript, podemos encerrarlo en:
+
+<script src="https://gist.github.com/1967260.js"> </script>
+
+Y luego lo recuperamos con:
+{% highlight javascript %}
+Mustache.render($("#template"), items);
+{% endhighlight %}
+Lo cual nos permite esconder los templates dentro del mismo archivo HTML.
+
+Contras
+-------
+* Usa la misma sintaxis que Jinja, es decir en Django vamos a tener muchos muchos problemas.
+* Fomenta la duplicación de código del template (el que se reenderea desde el server y el del cliente).
+* La sintaxis no es del todo clara.
+* No está bueno como maneja los helpers.
+* Es adictivo.
+
+Resources
+---------
+
+* http://mustache.github.com/
+* http://mustache.github.com/mustache.5.html
+* http://mustache.github.com/mustache.1.html
+* http://railscasts.com/episodes/295-sharing-mustache-templates
+* http://net.tutsplus.com/tutorials/javascript-ajax/quick-tip-using-the-mustache-template-library/
+
+Nota
+----
+
+No es la única opción si necesitamos un parser de templates en **Javascrpt**, existen varios otros entre los cuales yo destaco [handlebars](http://handlebarsjs.com/), del cual pienso hablar en un próximo post.

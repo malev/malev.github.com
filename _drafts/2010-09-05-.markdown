@@ -1,0 +1,16 @@
+--- 
+layout: post
+title: attr_accessor & attr_protected
+wordpress_id: 546
+wordpress_url: http://blog.malev.com.ar/?p=546
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+http://jboxer.com/2010/01/the-importance-of-attr_accessible-in-ruby-on-rails/
+http://railscasts.com/episodes/26-hackers-love-mass-assignment

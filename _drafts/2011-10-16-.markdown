@@ -1,0 +1,15 @@
+--- 
+layout: post
+title: Me cambie a ZSH
+wordpress_id: 932
+wordpress_url: http://blog.malev.com.ar/?p=932
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+https://github.com/robbyrussell/oh-my-zsh

@@ -1,0 +1,19 @@
+--- 
+layout: post
+title: Mobile develpment
+wordpress_id: 772
+wordpress_url: http://blog.malev.com.ar/?p=772
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+reduce downloads in general
+specially in mobile
+
+solución: aceptar json
+$getJSON ....

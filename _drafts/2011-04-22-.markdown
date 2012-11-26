@@ -1,0 +1,54 @@
+--- 
+layout: post
+title: how to write a DSL in Ruby
+wordpress_id: 795
+wordpress_url: http://blog.malev.com.ar/?p=795
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+Primero que nada: **¿Qué es un DLS?**
+Es un lenguaje de programación dedicado a resolver un problema en particular,  representar un problema específico y proveer una técnica para solucionar una situación particular. Un ejemplo super conocido es logo.
+**¿De dónde salí con esto?**
+No se si alguna vez vieron la sintaxis hermosa de sinatra (del que ya hable algunas veces [2], [3] y [4]), aquí les dejo un ejemplo super clásico:
+
+{% highlight ruby %}
+get '/' do
+  "this rocks!"
+end
+{% endhighlight %}
+
+A mi me parece muy muy expresivo, una petición del tipo get a la raiz devuelve una cadena, qué cosa más simple que esa? Ahora, cómo hace ruby para permitirnos ese tipo de estructuras?
+Primero tenemos que entender como funcionan **yield** y los **blocks** en **ruby**. Por supuesto ya he hablado de estos en un post anterior [5].
+**Algo que empieza a tener forma:**
+
+{% highlight ruby %}
+def get(arg)
+   yield arg
+end
+get("hola") do |arg|
+   puts arg
+end # => hola
+{% endhighlight %}
+
+Esto que hicimos, si bien no es un mini framework super cool como sinatra, es una primera aproximación. Por lo menos pudimos usar **get** casi casi como una keyword.
+
+BUSCAR UN EJEMPLO Y DESARROLLARLO!!!
+
+https://github.com/cinchrb/cinch
+
+**Resources**
+[1] http://es.wikipedia.org/wiki/Lenguaje_espec%C3%ADfico_del_dominio
+[2] http://blog.malev.com.ar/2009/08/26/escuchando-sinatra/
+[3] http://blog.malev.com.ar/2009/08/26/sinatra-app-in-multiple-files/
+[4] http://blog.malev.com.ar/2009/10/08/galletas-en-sinatra-cookies/
+[5] http://blog.malev.com.ar/2010/11/12/block/
+
+http://rubylearning.com/blog/2010/11/23/dont-know-metaprogramming-in-ruby/
+http://rubylearning.com/blog/2010/11/30/how-do-i-build-dsls-with-yield-and-instance_eval/
+http://www.artima.com/rubycs/articles/ruby_as_dsl.html

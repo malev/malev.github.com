@@ -1,0 +1,40 @@
+body {
+  background: url(/images/bg.gif);
+  font-family: 'Inconsolata', sans-serif;
+}
+h1{
+  color: #FF7400;
+}
+h2{
+  color: #FF9640;
+  font-size: 1.1em;
+}
+h3{
+  color: #FFB273;
+}
+ul{
+  list-style: none;
+  padding: 0;
+}
+a{
+  text-decoration: none;
+}
+li{
+  font-weight: bold;
+}
+a:link {color:#009999;}
+a:visited {color:#1D7373;}
+a:hover {color:#006363;}
+a:active {color:#33CCCC;}
+#content{
+  width: 960px;
+  margin: 0 auto;
+}
+.left_column{
+  width: 60%;
+  float: left;
+}
+.resume{
+  width: 90%;
+  color: #E6E6E6;
+}

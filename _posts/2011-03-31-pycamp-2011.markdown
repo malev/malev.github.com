@@ -1,0 +1,45 @@
+--- 
+layout: post
+title: Pycamp 2011
+wordpress_id: 764
+wordpress_url: http://blog.malev.com.ar/?p=764
+comments: true
+categories: 
+- title: comunidad
+  slug: comunidad
+  autoslug: comunidad
+- title: Python
+  slug: python
+  autoslug: python
+- title: PyAr
+  slug: pyar-2
+  autoslug: pyar
+tags: 
+- title: comunidad
+  slug: comunidad
+  autoslug: comunidad
+- title: Python
+  slug: python
+  autoslug: python
+- title: pycamp
+  slug: pycamp
+  autoslug: pycamp
+---
+{{ page.title }}
+================
+El pycamp es un evento organizado por la comunidad de python Argentina en el que nos reunimos un grupo de programadores a hacer lo que más nos gusta: codear. Esta es la 2da vez que voy a uno.Ya había ido el año pasado a Verónica (La Plata) y esta vez, la ciudad elegida fue La Falda en Córdoba. En el evento hubo de todo: un poco de desarrollo web, HTML5, CSS3, desarrollo de juegos, control de hardware, código extraño (magia negra como lo denominó archuni), risas, diversión y la gran diva de este tipo de eventos, más conocida como "la muy buena onda de todos los participantes". 
+Partí el Miércoles 23 en la noche.A la madrugada me encontraba en la provincia de Córdoba, donde me topé con Nueces y Perrito para empujar el auto de este último. Luego de ese pequeño percance nos dirigimos derechito para La Falta, no sin antes a buscar a Martín. Un denominador común de los pycamp es la elección estratégica de lugares hermosos para juntarnos, por lo que el viaje se vio plasmado de un verde infinito, un lago, algunas montañas (allí les dicen sierras) y la tranquilidad que toda ciudad pequeña trae por defecto. Para el jueves al mediodía ya nos econtrabamos casi todos los participantes. 
+Minutos después de almorzar vino la ronda de presentación, algunas burlas, un poco de risa y ya estaban todos los proyectos pegados en la pared para que cada uno elija donde participar o que aprender. 
+Me junte con Gonzalo, Eze y Flecoxs a codear una web app hecha en django para localizar fichines o arcades. GeoArcade fue la denominación elegida. Excelente la onda de los amigos que me tuvieron toda la paciencia necesaria para poder aportar alguito al proyecto. En otro momento me junte con X-Ip (que recién conocía pese a haber chateado con él varias veces a través del IRC), nassty y un chico cuyo nombre no recuerdo (upst) a darle soporte a un pequeño ORM con MySQL, proyecto por demás de interesante, pero un tanto complicado. 
+Los días transcurrieron así, mucho código, risas, mates, hasta que de repente alguien sacó de su galera un juego que puso en peligro el normal desenvolvimiento del pycamp. ¡ARMAGETRON! Un juego super simple pero tremendamente adictivo si se juega en red. Por supuesto salió torneo, con Eze fuimos eliminados en semifinales en una patética derrota, pero bueh! Fue muy bueno ver toda la infraestructura que se montó para el torneo, luego de oscurecer la habitación, cablear las máquinas a competir (para evitar bajas en el ping), se montó un proyector para que los espectadores disfruten del evento en una pantalla como se merece. 
+Me colgué hablando del juego, va a dar la sensación de que me la pasé jugando, pero no fue así. Aprendí bastante de django, eso me gustó mucho y creo que muestra una de las cosas más valiosas del pycamp: la posibilidad de sentarte junto a un senior, junto a un verdadero crack en la materia, que te de pautas y te ayude con el aprendizaje y a generar software de calidad. No importaba el grupo al que te unas, siempre había un mentor completamente despojado de soberbia y cosas así. 
+Ya por los últimos días me puse a estudiar un poco el funcionamiento de un framework javascript llamado backbone.js que me viene interesando desde hace rato ya (prometo escribir sobre le mismo pronto). 
+Una cosa más: el sábado en la noche caí cual paracaidista en un grupo que se juntaba a jugar ROL. ¡Nunca había jugado! Y la verdad la pase genial. Al principio no entendía muy bien la dinámica pero luego de unos minutos ya estaba disfrutando la partida. 
+Hicimos una excursión al Eden Hotel, que no me gustó mucho, pero valió la pena el paseo. También participé de la reunión de PyAr con algunas discusiones más que interesantes, de las cuales la que más resaltó fue "Alcanzando mujeres" (ver lista para más información). 
+Cuando ya terminaba el pycamp y la gente empezaba a preparar sus cosas hicimos un Show And Tell que Lipe filmo. Ahí todos nos pusimos al tanto de los distintos proyectos que encaramos, fueron varios, pero creo que el que más brillo fue Pilas y todo el esfuerzo que le pusieron encima. 
+Mis felicitaciones al organizador del evento y seguro contarán conmigo en el próximo!
+P/d: Un punto aparte a modo de recomendación para los newbies: el pycamp vale la pena.La primera vez que fui no tenía ni idea y la pase muy bien, la buena onda era tal que me pude integrar como si nada a varios proyectos con gente muy copada. El crecimiento que tuve en esos escasos días es invaluable. Así que si se enteran de un próximo pycamp y tienen dudas, vayan! Posta!
+
+Algunas fotos de Facundo:
+[gallery]
+Los videos del Show And Tell [aquí](http://www.youtube.com/view_play_list?p=62155409552F71DE).

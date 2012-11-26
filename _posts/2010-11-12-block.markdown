@@ -1,0 +1,137 @@
+--- 
+layout: post
+title: Block
+wordpress_id: 611
+wordpress_url: http://blog.malev.com.ar/?p=611
+comments: true
+categories: 
+- title: metaprogramacion
+  slug: metaprogramacion
+  autoslug: metaprogramacion
+- title: Ruby
+  slug: ruby
+  autoslug: ruby
+- title: ruby-core
+  slug: ruby-core
+  autoslug: ruby-core
+tags: 
+- title: metaprogramming
+  slug: metaprogramming
+  autoslug: metaprogramming
+- title: Ruby
+  slug: ruby
+  autoslug: ruby
+- title: yield
+  slug: yield
+  autoslug: yield
+- title: block
+  slug: block
+  autoslug: block
+- title: proc
+  slug: proc
+  autoslug: proc
+---
+{{ page.title }}
+================
+Un bloque (**block**) es una sección de código agrupada, un conjunto de declaraciones y expresiones[1]. La idea se desarrolló en los 50 y se formalizó en los lenguajes Algol 58 y Algol 60 [2]. 
+En Ruby, se da entre las keywords: do y end o entre llaves, generalmente luego del llamado a un método.
+
+{% highlight ruby %}
+do |a1, a2, ...|
+  ...
+end
+# Otra forma
+{ |a1, a2, ...| ... }
+{% endhighlight %}
+
+**Ejemplos:**
+
+{% highlight ruby %}
+sum = 0
+[1,2,3,4].each { |x| sum += x }
+puts x # => 10
+{% endhighlight %}
+
+**Nuestro propio bloque:**
+
+{% highlight ruby %}
+def dame_un_bloque
+  yield
+end
+dame_un_bloque { puts "hola" } # => hola
+def dame_bloque_con_parametros
+  yield "Marcos"
+end
+dame_bloque_con_parametros  { |name| puts "mi nombre es #{name}" }
+# mi nombre es Marcos
+{% endhighlight %}
+
+La keyword **yield**, toma el bloque de código recibido como argumento y lo ejecuta. Puede pasar parámetros.
+**Ejemplo de bloques más complejos:**
+
+{% highlight ruby %}
+array = [1, 2, 3, 4]
+array.collect { |n| n**2 }
+array.collect! do |n|
+  n ** 2
+end
+{% endhighlight %}
+
+En ambos casos **collect** y **collect!** toman un bloque como parámetro. ¿Cómo sería una posible implementación del método collect!?
+Tenemos varias opciones, pero aquí mostraremos 2. Primero usando el keyword **yield** y luego recibiendo el bloque como **Proc** (los veremos en otro post).
+
+{% highlight ruby %}
+class Array
+  def iterate!
+    self.each_with_index do |n, i|
+      self[i] = yield(n)
+    end
+  end
+end
+{% endhighlight %}
+
+Como objecto Proc [3]
+
+{% highlight ruby %}
+class Array
+  def iterate!(&code)
+    self.each_with_index do |n, i|
+      self[i] = code.call(n)
+    end
+  end
+end
+{% endhighlight %}
+
+**Yield puede pasar parámetros:**
+
+{% highlight ruby %}
+def fib_up_to(max)
+  i1, i2 = 1, 1
+  while i1 <= max
+    yield i1
+    i1, i2 = i2, i1 + i2
+  end
+end
+fib_up_to(100) {|f| puts f, " "}
+{% endhighlight %}
+
+**y como todo en ruby Yield puede devolver valores:**
+El ejemplo devuelve el primer elemento de arreglo que cumple con la condición impuesta en el bloque pasado como parámetro.
+
+{% highlight ruby %}
+class Array
+  def find
+    for i in 0..size
+      value = self[i]
+      return value if yield(value)
+    end
+    return nil
+  end
+end
+[1,3,5,7,9].find { |v| v*v > 30 } # => 7
+{% endhighlight %}
+
+Un punto interesante a saber es que las variables dentro de los blocks son siempre locales a los mismos, inclusive si usan el mismo nombre de una variable externa.
+[1] Programming Ruby 1.9 - Dave Thomas
+[2] [http://en.wikipedia.org/wiki/Block_%28programming%29](http://en.wikipedia.org/wiki/Block_%28programming%29)
+[3] [http://en.wikipedia.org/wiki/Procedures](http://en.wikipedia.org/wiki/Procedures)

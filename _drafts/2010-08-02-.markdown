@@ -1,0 +1,112 @@
+--- 
+layout: post
+title: "Introducci\xC3\xB3n a Prototype"
+wordpress_id: 439
+wordpress_url: http://blog.malev.com.ar/?p=439
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+Desde hace algunos días vengo probando **prototype** en la oficina y he aquí un resumen de las cosillas que he ido aprendiendo.
+
+**Introducción**
+Prototype es un framework escrito en JavaScript  que se orienta al desarrollo sencillo y dinámico de aplicaciones web. Es una herramienta que implementa las técnicas AJAX y su potencial es aprovechado al máximo cuando se desarrolla con Ruby On Rails. [1]
+La última versión estable liberada es al 1.6 y la puede bajar de... la web de prototype [2]. Se distribuye bajo licencia MIT. Cuenta con una extensa documentación en [3] pero no es para nada simple ni introductoria :( Pero al menos cuenta con una lista de correos y un canal de IRC bastante concurrido en freenode.net [4].
+
+**Instalación**
+1) Bajamos el código de [5] o si queremos experimentar, podemos clonar el repo desde github [6]
+1.1) Opcional: Comprimimos el js. Algo que no me gusto es que el js que nos bajamos de la página de pototype no está comprimido y de querer optimizar algunos bytes tenemos que hacer este procedimiento nosotros mismos :( Para esto yo use una herramienta on line de compresión de js [7].
+ACTUALIZADO -> Según me dijeron en el canal de prototype, las versiones comprimdas se pueden bajar de aquí [8]. Carlos de Insignia me aclara en [twitter](http://twitter.com/ckozus/status/20089419976) por que la versión oficial de twitter no está comprimida :) 2) Agregamos al header:
+
+{% highlight html %}
+
+{% endhighlight %}
+
+
+**Funciones prototype**
+**$() **Busca un elemento por su ID en todo el DOM [9]. También lo puede retornar:
+
+{% highlight javascript %}
+var elemento = $('id_del_elemento');
+elemento.innerHTML; // devuelve el contenido de elemento
+elemento.innerHTML = 'ahora lo cambie'; // cambia el contenido del elemento.
+/* kangax nos recomienda hacer esto último así:*/
+$('id_del_elementor').update('some nifty content');
+{% endhighlight %}
+
+**$A()** Convierte un parámetro en un array modificado de prototype además de los métodos comunes de javascript nos presenta el ya conocido <trong>each:
+
+{% highlight javascript %}
+var paras = $A(document.getElementsByTagName('p'));
+paras.each(Element.hide);
+$(paras.last()).show();
+{% endhighlight %}
+
+**$H()** Convierte un objeto en un hash:
+
+{% highlight javascript %}
+var h = $H({name: 'John', age: 26, country: 'Australia'});
+// Equivalent to:
+var h = new Hash({name: 'John', age: 26, country: 'Australia'});
+// Can then be accessed the classic Hash way
+h.get('country');
+// -> 'Australia'
+/* Other example */
+function duh() {
+  var ObjetoUsuario = {id: 1, login: "dponce", email: "correo_falso@wikipedia.org"};
+  //  convertimos el objeto a un HASH
+  var el_hash = $H(ObjetoUsuario);
+  $('dponce').update(el_hash.toQueryString());
+}
+{% endhighlight %}
+
+**$F()** Devuelve el valor de un control de un formulario
+Supongamos:
+
+{% highlight html %}
+Santiago Del Estero
+  Salta
+{% endhighlight %}
+
+
+{% highlight javascript %}
+$F('ciudad'); // nos devolvera la ciudad que haya seleccionado el usuario
+{% endhighlight %}
+
+**$$(cssRule...)** Entrega un arreglo con todos los elementos que se puedan seleccionar con cssRule.
+Nota: Si ponemos un ID, también retornará un arreglo, pero con un único elemento.
+
+{% highlight javascript %}
+$$('div');
+// -> all DIVs in the document. Same as document.getElementsByTagName('div').
+// Nice addition, the elements you're getting back are already extended!
+ $$('#contents');
+// -> same as $('contents'), only it returns an array anyway (even though IDs must
+// be unique within a document).
+ $$('li.faux');
+// -> all LI elements with class 'faux'
+{% endhighlight %}
+
+
+PARA CONTINUAR!!!
+http://es.wikipedia.org/wiki/Prototype#Introducci.C3.B3n
+http://thinkweb2.com/projects/prototype-checklist/
+http://perfectionkills.com/how-well-do-you-know-prototype-part-ii/
+
+puede recibir el id del elemento, o puede recibir el propio elemento, y si recibe más de un elemento devuelve un vector de elementos.
+
+[1] http://es.wikipedia.org/wiki/Prototype
+[2] http://www.prototypejs.org/
+[3] http://prototypejs.org/api  ||  http://api.prototypejs.org/
+[4] http://www.prototypejs.org/discuss
+[5] http://www.prototypejs.org/download
+[6] http://github.com/sstephenson/prototype
+[7] http://jscompress.com/
+[8] http://groups-beta.google.com/group/prototype-core/files?pli=1
+[9] http://es.wikipedia.org/wiki/Document_Object_Model
+</trong>

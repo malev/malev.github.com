@@ -1,0 +1,26 @@
+---
+layout: nil
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Marcos Vanetta (malev)</title>
+ <link href="http://malev.com.ar/atom.xml" rel="self"/>
+ <link href="http://malev.com.ar/"/>
+ <updated>{{ site.time | date_to_xmlschema }}</updated>
+ <id>http://malev.com.ar/</id>
+ <author>
+   <name>Marcos Vanetta (malev)</name>
+ </author>
+
+ {% for post in site.posts limit:20 %}
+ <entry>
+   <title>{{ post.title }}</title>
+   <link href="http://malev.com.ar{{ post.url }}"/>
+   <updated>{{ post.date | date_to_xmlschema }}</updated>
+   <id>http://malev.com.ar{{ post.id }}</id>
+   <content type="html">{{ post.content | xml_escape }}</content>
+ </entry>
+ {% endfor %}
+ 
+</feed>

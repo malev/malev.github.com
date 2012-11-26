@@ -1,0 +1,15 @@
+--- 
+layout: post
+title: Sequel
+wordpress_id: 771
+wordpress_url: http://blog.malev.com.ar/?p=771
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+https://github.com/jeremyevans/sequel

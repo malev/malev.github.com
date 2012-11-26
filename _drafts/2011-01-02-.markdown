@@ -1,0 +1,34 @@
+--- 
+layout: post
+title: Testing with rSpec
+wordpress_id: 687
+wordpress_url: http://blog.malev.com.ar/?p=687
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: 
+- title: Ruby
+  slug: ruby
+  autoslug: ruby
+- title: rubyonrails
+  slug: rubyonrails
+  autoslug: rubyonrails
+- title: rSpec
+  slug: rspec
+  autoslug: rspec
+- title: testing
+  slug: testing
+  autoslug: testing
+---
+{{ page.title }}
+================
+http://blog.elctech.com/2008/12/30/rspec-tutorial/
+http://erikonrails.snowedin.net/?tag=rspec
+http://rspec.rubyforge.org/rspec/1.1.9/classes/Spec/Matchers.html
+http://www.lukeredpath.co.uk/blog/developing-a-rails-model-using-bdd-and-rspec-part-1.html
+http://blog.davidchelimsky.net/2007/05/14/an-introduction-to-rspec-part-i/
+http://jimmyzimmerman.com/blog/2007/11/simple-tutorials-for-learning-bdd-and-rspec.html
+http://rails.anyware-technologies.com.br/2009/04/21/tdd-on-rails-4-rspec-authlogic-factory_girl-and-resource_controller/
+
+http://www.ibm.com/developerworks/web/library/wa-rspec/

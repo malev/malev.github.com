@@ -1,0 +1,15 @@
+--- 
+layout: post
+title: accepts_nested_attributes_for
+wordpress_id: 701
+wordpress_url: http://blog.malev.com.ar/?p=701
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+accepts_nested_attributes_for

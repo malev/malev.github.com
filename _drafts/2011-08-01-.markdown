@@ -1,0 +1,15 @@
+--- 
+layout: post
+title: Python metaclass
+wordpress_id: 894
+wordpress_url: http://blog.malev.com.ar/?p=894
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+http://www.ibm.com/developerworks/linux/library/l-pymeta/index.html

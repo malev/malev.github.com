@@ -1,0 +1,33 @@
+--- 
+layout: post
+title: acelerando jQuery
+wordpress_id: 737
+wordpress_url: http://blog.malev.com.ar/?p=737
+categories: 
+- title: "Sin categor\xC3\xADa"
+  slug: sin-categoria
+  autoslug: "sin-categor\xC3\xADa"
+tags: []
+
+---
+{{ page.title }}
+================
+¿Qué son los selectors? Bueno, cada vez que queremos hacer asignar un evento o alterar el estado de un elemento de nuestra página, primero debemos ubicarlo dentro del DOM. jQuery nos hace este trabajo con los selectors: $(".left") -> nos entregará todos los elementos del DOM que tengan la clase "left". Por supuesto hay muchos selectors y no todos tienen la misma velocidad de respuesta. Aquí un rangking:
+
+
+ * ID selectors: $("#footer")
+
+ * Element selectors: $("input")
+
+ * Class selectors: $(".left")
+
+ * Pseudo selectors: $(:visible), $([attribute=value])
+
+
+
+Tiene mucho sentido que los pseudo selectors sean los más lentos, pues obviamente tiene que haber algún tipo de proceso "javascriptionano" en el medio.
+
+
+caching: var $inputs = $(".inputs"); ...
+
+Channing: casi todos los métodos jquery devuelven otro método jquery, lo que nos permite aplicar métodos como cadena:

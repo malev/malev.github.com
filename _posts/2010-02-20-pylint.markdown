@@ -1,0 +1,32 @@
+--- 
+layout: post
+title: Pylint
+wordpress_id: 140
+wordpress_url: http://blog.malev.com.ar/?p=140
+comments: true
+categories: 
+- title: Programacion
+  slug: programacion
+  autoslug: programacion
+- title: Python
+  slug: python
+  autoslug: python
+tags: 
+- title: buenas practicas
+  slug: buenas-practicas
+  autoslug: buenas-practicas
+- title: Python
+  slug: python
+  autoslug: python
+---
+{{ page.title }}
+================
+**Pylin** [1] un programa que analiza el código **python** en busca de errores, bugs y “malas prácticas”. Muy interesante si recién estas empezando con python y quieres escribir código como corresponde.
+Eso sí, pylint reta bastante, de hecho [2] nos recomienda un archivo de configuración para que pylint nos trate un poco mejor :D
+Por cierto, [3] nos enseña a configurarlo en Eclipse. Yo uso gedit, así que no he probado esa opción.
+Una cosa más, quiero agradecer a Gonzalo [4] por recomendarlo.
+
+[1] [http://pypi.python.org/pypi/pylint](http://pypi.python.org/pypi/pylint)
+[2] [http://conalambre.wordpress.com/2009/01/31/pylint-chequear-codigo-escrito-en-python/](http://conalambre.wordpress.com/2009/01/31/pylint-chequear-codigo-escrito-en-python/)
+[3] [http://hdlorean.wikidot.com/tutoriales:pylint](http://hdlorean.wikidot.com/tutoriales:pylint)
+[4] [http://twitter.com/gonzalodelgado](http://twitter.com/gonzalodelgado)

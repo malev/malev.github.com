@@ -1,0 +1,146 @@
+--- 
+layout: post
+title: Proc
+wordpress_id: 617
+wordpress_url: http://blog.malev.com.ar/?p=617
+comments: true
+categories: 
+- title: metaprogramacion
+  slug: metaprogramacion
+  autoslug: metaprogramacion
+- title: objetos
+  slug: objetos
+  autoslug: objetos
+- title: Programacion
+  slug: programacion
+  autoslug: programacion
+- title: Ruby
+  slug: ruby
+  autoslug: ruby
+- title: ruby-core
+  slug: ruby-core
+  autoslug: ruby-core
+tags: 
+- title: metaprogramming
+  slug: metaprogramming
+  autoslug: metaprogramming
+- title: Ruby
+  slug: ruby
+  autoslug: ruby
+- title: proc
+  slug: proc
+  autoslug: proc
+- title: lambda
+  slug: lambda
+  autoslug: lambda
+---
+{{ page.title }}
+================
+No todo en Ruby es un objeto, por ejemplo los bloques (**blocks**) de código. Sin embargo y por suerte pueden ser convertidos en objetos.
+**¿Cómo convertimos un bloque en un objeto?**
+Tenemos 4 opciones:
+- Usando Proc.new
+
+{% highlight ruby %}
+>> p = Proc.new { "hola" }
+=> #<Proc:0xb71921b8@(irb):1>
+>> puts p.call
+hola
+=> nil
+{% endhighlight %}
+
+- Pasando el bloque como argumento de un método
+
+{% highlight ruby %}
+def meth1(p1, p2, &block)
+  # el & indica que ese argumento debe ser un bloque
+  # y se debe convertir en un Proc
+  puts block.inspect
+end
+meth1(1,2) { "a block" } #<Proc:0x0a4f4c@/tmp/prog.rb:4>
+meth1(3,4) # nil
+{% endhighlight %}
+
+Esta forma es exactamente lo mismo que la primera.
+- Usando el método Kernel.lambda y asociandolo a un bloque.
+
+{% highlight ruby %}
+>> block = lambda { "hola" }
+=> #<Proc:0xb7334dcc@(irb):1>
+{% endhighlight %}
+
+- Usando el método Kernel.proc (solo válido en 1.9)
+<pre lang="ruby"
+proc_object = proc {puts "Hello from inside the proc"}
+proc_object.call
+puts "Is proc_object a lambda - #{proc_object.lambda?}"
+
+**¿Qué quiere decir que un bloque sea un objeto?**
+Justamente eso y que puede ser tratado como tal :) puede ser almacenado en variables o ser devuelto por un método:
+
+{% highlight ruby %}
+def return_a_block(&block)
+  block
+end
+def store_a_block(&block)
+  @local = block
+end
+{% endhighlight %}
+
+**Ejecutando el código de un Proc:**
+- yield
+
+{% highlight ruby %}
+def meth
+  res = yield
+  "The block returns #{res}"
+end
+{% endhighlight %}
+
+- call
+
+{% highlight ruby %}
+l = Proc.new { |a| a + 1 }
+puts l.call(99)
+{% endhighlight %}
+
+**Diferencias entre Proc.new & lambda**
+- Manejo de parámetros:
+Proc.new es muy liberal con la cantidad de parámetros (como paralell asigment).
+
+{% highlight ruby %}
+l = Proc.new { |a,b,c| puts a,b,c }
+l.call(1,2,3)
+l.call(1,2)
+l.call(1,2,3,4)
+{% endhighlight %}
+
+lambda es más rígido (como la llamada a un método).
+
+{% highlight ruby %}
+l = lambda { |a,b,c| puts a,b,c }
+l.call(1,2,3,4) -> error
+l = lambda { |a,*b| puts a, b }
+{% endhighlight %}
+
+
+- Retorno (return)
+Proc.new toma el return y sale del contexto que lo rodea, mientras que en lambda, el return solo sale del Proc.:
+
+{% highlight ruby %}
+def method
+  puts "at top"
+  pr = Proc.new { return }
+  puts "at the bottom"
+end
+puts "before call"
+method
+puts "after call"
+# Salida:
+before call - at top - after call
+# omite el "at the bottom"
+{% endhighlight %}
+
+**Resources**
+[1] [The Ruby Object Model and Metaprogramming - Screencasts with Dave Thomas](The Ruby Object Model and Metaprogramming - Screencasts with Dave Thomas)
+[2] [http://www.skorks.com/2010/05/ruby-procs-and-lambdas-and-the-difference-between-them/](http://www.skorks.com/2010/05/ruby-procs-and-lambdas-and-the-difference-between-them/)
